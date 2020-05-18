@@ -21,9 +21,9 @@ output:
 
 ```{r, echo=FALSE}
 # CONFIG
-#user_name <- "nando" # your Git username (only needed if
+user_name <- "FernandoMillanVillalobos" # your Git username (only needed if
 # you want to deploy to GH pages)
-#project_name <- "rddj-template" # adapt!
+project_name <- "fs20c3_datenjournalismus" # adapt!
 package_date <- "2020-04-01" # date of the CRAN snapshot that
 # the checkpoint package uses
 r_version <- "4.0.0" # R-Version to use
@@ -39,7 +39,7 @@ This report was generated on `r Sys.time()`. R version: `r paste0(version$major,
 
 ## R-Script & data
 
-The preprocessing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http://`r user_name`.github.io/`r project_name`/rscript.zip). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `ìnput` will be processed and results will be written to `output`. 
+The preprocessing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http://`r user_name`.github.io/`r project_name`/). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `ìnput` will be processed and results will be written to `output`. 
 
 ## GitHub
 
@@ -247,18 +247,35 @@ write_csv(df, "output/vietnam_water_sanitation.csv")
 ## Data Summarization
 Now we want to describe some important properties of the distribution of the values across the observations in our datasets, an overview of the key properties of the data.
 
-```{r eda summarising}
+```{r eda summarising donors}
 
-# Finding the most common value of our different variables in our sample.
-summary(df)
+# How many different donors
+(distinct_donors <- unique(df$donor) %>% 
+  n_distinct())
 
-# Adding  the variance, the sample standard deviation and the inter-quartile range (IQR).
-select(df, amount) %>% 
-  summarise_each(list(var = var, sd = sd, IQR = IQR))
-
-
+# Times and frequency donors contribution
+(donors_contrib <- df %>% 
+  group_by(donor) %>% 
+  summarize(
+    count = n()
+  ) %>% 
+  arrange(desc(count)) %>%
+  mutate(freq = count / sum(count),
+         pct = round(freq * 100, 1)) %>% 
+  select(donor, count, pct))
 
 ```
+
+From our primary data exploration we can see that there´re a total of __`r distinct_donors`__. Donors that have contributed more frequently are Germany (__`r donors_contrib$pct[1]`%__) , UNICEF (__`r donors_contrib$pct[2]`%__) and Japan (__`r donors_contrib$pct[3]`%__). These three main donors represent together up to __`r donors_contrib$pct[1] + donors_contrib$pct[2] + donors_contrib$pct[3]`%__ from all contributions. On the other hand, donors like New Zealand (__`r donors_contrib$pct[27]`%__), EC (__`r donors_contrib$pct[26]`%__) and OFID (__`r donors_contrib$pct[25]`%__) are located at the bottom of the distribution with an all together total percentage of less than __1%__.
+
+```{r data summarising amount}
+
+# Finding the most common value of our quantitative variable in our sample.
+select(df, amount) %>%
+  summarise_each(list(max = max, min = min, mean = mean, median = median, var = var, sd = sd, IQR = IQR))
+
+```
+
 
 ## Data Visualization
 We´re going to explore and gain insights from our data using one of the most outstanding ability of human beings: capturing visual patterns. Let´s explore distributions of key variables in our dataset: donor, amount and activity.
@@ -268,8 +285,7 @@ We´re going to explore and gain insights from our data using one of the most ou
 ```{r donors distribution}
 
 # Distinct donors
-(distinct_donors <- unique(df$donor))
-n_distinct(distinct_donors) # total count of distinct donors
+
 
 # p <- ggplot(subset(df, amount > 10000000), aes(x = donor, y = amount)) +
 #   geom_col() +
