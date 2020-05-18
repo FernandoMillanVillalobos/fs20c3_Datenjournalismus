@@ -39,7 +39,7 @@ This report was generated on `r Sys.time()`. R version: `r paste0(version$major,
 
 ## R-Script & data
 
-The preprocessing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http://`r user_name`.github.io/`r project_name`/). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `ìnput` will be processed and results will be written to `output`. 
+The preprocessing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http://`r user_name`.github.io/`r project_name`/). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `ìnput` will be processed and results will be written to `output`.
 
 ## GitHub
 
@@ -189,6 +189,10 @@ This notebook is thought as a working document for the development and documenta
 
 [AidData](https://www.aiddata.org/) is a research lab at William & Mary's Global Research Institute. AidData’s interdisciplinary team focus on research and analysis of development investments from more than 90 grants and contracts worth more than $50 million over the last 16 years. Taking as starting point the [data](https://www.aiddata.org/data/aiddata-core-research-release-level-1-3-1) provided by them and after a previous research about media use of the information gathered and made available to the public by this organization, we´ve developed a new data-driven story. In order to do that, data from the core dataset were selected, extracted and analysed to built our written and visual narrative.
 
+The data-driven story we want to tell with the help of the data provided by AidData, is about the succesfull and quick development of a national water supply and sanitation net that Vietnam has accomplished in the past two decades. This huge progress has been possible thanks, among other reasons, to a broad international cooperation. In this notebook we´ve digged into the available data to bring into the light the main protagonists of this collaborative achievement and try to picture the timeline that makes it a today reality.
+
+With this in mind, we´ve looked for the 3-digit sector classification based on OECD purpose codes that comes in [the documentation of the data](http://docs.aiddata.org/ad4/files/aiddata_coding_scheme_0.pdf) and selected the activities that are related to our main goal.
+
 # Data Importing
 The core dataset provided by AidData can be found [here](https://www.aiddata.org/data/aiddata-core-research-release-level-1-3-1). This dataset tracks known international development flows from bilateral and multilateral aid organizations from 1947 to 2013 in a flat-table structure. Information available are served as a granular data from more level of details to a general overview. After getting a first impression of the different datasets that encompass the whole data core and reading the [documentation](https://www.aiddata.org/methods/sdg-coding), we end that the information we need for our story is located in the "thin" version (more than 1.500.000 entries).
 
@@ -270,12 +274,28 @@ From our primary data exploration we can see that there´re a total of __`r dist
 
 ```{r data summarising amount}
 
-# Finding the most common value of our quantitative variable in our sample.
+# Finding the most common values of our quantitative variable in our sample.
 select(df, amount) %>%
   summarise_each(list(max = max, min = min, mean = mean, median = median, var = var, sd = sd, IQR = IQR))
 
+# Donors amount ranking distribution
+(donors_ranking_amount <- df %>% 
+  group_by(donor) %>% 
+  summarize(
+    total_amount = sum(amount),
+    mean = mean(amount),
+    median = median(amount),
+    max = max(amount),
+    min = min(amount)
+  ) %>% 
+  arrange(desc(total_amount)) %>% 
+  mutate(freq = total_amount / sum(total_amount),
+         pct = round(freq * 100, 3)) %>% 
+  select(donor, total_amount, pct, mean, median, max, min))
+
 ```
 
+Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (__`r donors_ranking_amount$pct[1]`%__) stays in the podium as the most generous contributors. The other two, Germany (__`r donors_ranking_amount$pct[5]`%__) and UNICEF (__`r donors_ranking_amount$pct[20]`%__), are down (5º Germany) or far down (20º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam, represents a vast proportion of the total amount of money given adding up to __`r donors_ranking_amount$pct[1] + donors_ranking_amount$pct[2] + donors_ranking_amount$pct[3]`%__. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that that country has given to Vietnam was __`r donors_ranking_amount$max[1]` USD__, while the minimum was just __`r donors_ranking_amount$min[1]` USD__. A __`r donors_ranking_amount$max[1] * donors_ranking_amount$min[1] / 100`%__ more!
 
 ## Data Visualization
 We´re going to explore and gain insights from our data using one of the most outstanding ability of human beings: capturing visual patterns. Let´s explore distributions of key variables in our dataset: donor, amount and activity.
