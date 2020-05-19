@@ -293,9 +293,14 @@ select(df, amount) %>%
          pct = round(freq * 100, 3)) %>% 
   select(donor, total_amount, pct, mean, median, max, min))
 
+# Total amount given for all donors to Vietnam from 1992 to 2013
+(total_amount_donors <- sum(donors_ranking_amount$total_amount))
+
 ```
 
 Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (__`r donors_ranking_amount$pct[1]`%__) stays in the podium as the most generous contributors. The other two, Germany (__`r donors_ranking_amount$pct[5]`%__) and UNICEF (__`r donors_ranking_amount$pct[20]`%__), are down (5º Germany) or far down (20º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam, represents a vast proportion of the total amount of money given adding up to __`r donors_ranking_amount$pct[1] + donors_ranking_amount$pct[2] + donors_ranking_amount$pct[3]`%__. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that that country has given to Vietnam was __`r donors_ranking_amount$max[1]` USD__, while the minimum was just __`r donors_ranking_amount$min[1]` USD__. A __`r donors_ranking_amount$max[1] * donors_ranking_amount$min[1] / 100`%__ more!
+
+The total amount Vietnam has received from the 27 donors during the period that goes from 1992 to 2013 (dataset) was __`r total_amount_donors` USD__.
 
 ## Data Visualization
 We´re going to explore and gain insights from our data using one of the most outstanding ability of human beings: capturing visual patterns. Let´s explore distributions of key variables (donor, amount and activity), associations among them and time development in our dataset. 
