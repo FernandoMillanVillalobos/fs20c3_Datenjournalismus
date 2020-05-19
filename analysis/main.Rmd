@@ -245,6 +245,9 @@ df$donor <- df$donor %>%
 df$code <- df$code %>% 
   as_factor() # convert variable code as factor
 
+df$activity <- df$activity %>% 
+  as_factor() # convert variable activity as factor
+
 # Export our operational dataset as filtered csv file
 #write_csv(df, "output/vietnam_water_sanitation.csv")
 
