@@ -242,8 +242,11 @@ df$donor <- df$donor %>%
     "European Communities (EC)" = "EC"
   )
 
+df$code <- df$code %>% 
+  as_factor() # convert variable code as factor
+
 # Export our operational dataset as filtered csv file
-write_csv(df, "output/vietnam_water_sanitation.csv")
+#write_csv(df, "output/vietnam_water_sanitation.csv")
 
 ```
 
