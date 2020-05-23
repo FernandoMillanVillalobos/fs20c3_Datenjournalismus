@@ -1614,7 +1614,7 @@ div.tocify {
 
 <div id="notes" class="section level1">
 <h1><span class="header-section-number">1</span> Notes</h1>
-<p>This report was generated on 2020-05-23 11:43:00. R version: 4.0.0 on x86_64-w64-mingw32. For this report, CRAN packages as of 2020-04-01 were used.</p>
+<p>This report was generated on 2020-05-23 12:02:39. R version: 4.0.0 on x86_64-w64-mingw32. For this report, CRAN packages as of 2020-04-01 were used.</p>
 <div id="r-script-data" class="section level2">
 <h2><span class="header-section-number">1.1</span> R-Script &amp; data</h2>
 <p>The preprocessing and analysis of the data was conducted in the <a href="https://www.r-project.org/">R project for statistical computing</a>. The RMarkdown script used to generate this document and all the resulting data can be downloaded <a href="http://FernandoMillanVillalobos.github.io/fs20c3_datenjournalismus/">under this link</a>. Through executing <code>main.Rmd</code>, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder <code>input</code> will be processed and results will be written to <code>output</code>. The html on-line version of the analysis can be accessed through this <a href="https://FernandoMillanVillalobos.github.io/fs20c3_datenjournalismus/">link</a>.</p>
@@ -2044,7 +2044,10 @@ codes &lt;- c(14000, 14005, 14030, 14050, 14081)
     &quot;World Bank - International Development Association (IDA)&quot; = &quot;IDA&quot;,
     &quot;United Nations Children`s Fund (UNICEF)&quot; = &quot;UNICEF&quot;,
     &quot;OPEC Fund for International Development (OFID)&quot; = &quot;OFID&quot;,
-    &quot;European Communities (EC)&quot; = &quot;EC&quot;
+    &quot;European Communities (EC)&quot; = &quot;EC&quot;,
+    &quot;International Fund for Agricultural Development (IFAD)&quot; = &quot;IFAD&quot;,
+    &quot;Bill &amp; Melinda Gates Foundation&quot; = &quot;B&amp;M&quot;,
+    &quot;Global Environment Facility (GEF)&quot; = &quot;GEF&quot;
   )
 
 df$code &lt;- df$code %&gt;% 
@@ -2187,12 +2190,12 @@ df_bangladesh &lt;- df %&gt;%
 <td align="right">0.9</td>
 </tr>
 <tr class="even">
-<td align="left">Canada</td>
+<td align="left">B&amp;M</td>
 <td align="right">5</td>
 <td align="right">0.9</td>
 </tr>
 <tr class="odd">
-<td align="left">Bill &amp; Melinda Gates Foundation</td>
+<td align="left">Canada</td>
 <td align="right">5</td>
 <td align="right">0.9</td>
 </tr>
@@ -2217,12 +2220,12 @@ df_bangladesh &lt;- df %&gt;%
 <td align="right">0.5</td>
 </tr>
 <tr class="even">
-<td align="left">Czech Republic</td>
+<td align="left">GEF</td>
 <td align="right">2</td>
 <td align="right">0.4</td>
 </tr>
 <tr class="odd">
-<td align="left">Global Environment Facility (GEF)</td>
+<td align="left">Czech Republic</td>
 <td align="right">2</td>
 <td align="right">0.4</td>
 </tr>
@@ -2232,7 +2235,7 @@ df_bangladesh &lt;- df %&gt;%
 <td align="right">0.2</td>
 </tr>
 <tr class="odd">
-<td align="left">International Fund for Agricultural Development (IFAD)</td>
+<td align="left">IFAD</td>
 <td align="right">1</td>
 <td align="right">0.2</td>
 </tr>
@@ -2249,7 +2252,7 @@ df_bangladesh &lt;- df %&gt;%
 </tbody>
 </table>
 </div>
-<p>From our primary data exploration we can see that there´re a total of <strong>31</strong>. Donors that have contributed more frequently are Germany (<strong>22.4%</strong>) , UNICEF (<strong>12.1%</strong>) and Japan (<strong>7.1%</strong>). These three main donors represent together up to <strong>41.6%</strong> from all contributions. On the other hand, donors like New Zealand (<strong>0.4%</strong>), EC (<strong>0.4%</strong>) and OFID (<strong>0.5%</strong>) are located at the bottom of the distribution with an all together total percentage of less than <strong>1%</strong>.</p>
+<p>From our primary data exploration we can see that there´re a total of <strong>31</strong>. Donors that have contributed more frequently are UNICEF (<strong>22.4%</strong>) , Germany (<strong>12.1%</strong>) and Japan (<strong>7.1%</strong>). These three main donors represent together up to <strong>41.6%</strong> from all contributions. On the other hand, donors like New Zealand (<strong>0.2%</strong>), United Arab Emirates (<strong>0.2%</strong>) and IFAD (<strong>0.2%</strong>) are located at the bottom of the distribution with an all together total percentage of less than <strong>1%</strong>.</p>
 <pre class="r"><code># Finding the most common values of our quantitative variable in our sample.
 select(df, amount) %&gt;%
   summarise_each(list(max = max, min = min, mean = mean, median = median, var = var, sd = sd, IQR = IQR))</code></pre>
@@ -2470,7 +2473,7 @@ select(df, amount) %&gt;%
 <td align="right">19</td>
 </tr>
 <tr class="odd">
-<td align="left">International Fund for Agricultural Development (IFAD)</td>
+<td align="left">IFAD</td>
 <td align="right">13907669</td>
 <td align="right">0.451</td>
 <td align="right">13907669.0</td>
@@ -2497,7 +2500,7 @@ select(df, amount) %&gt;%
 <td align="right">4115</td>
 </tr>
 <tr class="even">
-<td align="left">Bill &amp; Melinda Gates Foundation</td>
+<td align="left">B&amp;M</td>
 <td align="right">4011180</td>
 <td align="right">0.130</td>
 <td align="right">802236.0</td>
@@ -2506,7 +2509,7 @@ select(df, amount) %&gt;%
 <td align="right">41137</td>
 </tr>
 <tr class="odd">
-<td align="left">Global Environment Facility (GEF)</td>
+<td align="left">GEF</td>
 <td align="right">2993512</td>
 <td align="right">0.097</td>
 <td align="right">1496756.0</td>
@@ -2592,8 +2595,8 @@ select(df, amount) %&gt;%
 <pre class="r"><code># Total amount given for all donors to Vietnam from 1992 to 2013
 (total_amount_donors &lt;- sum(donors_ranking_amount$total_amount))</code></pre>
 <pre><code>## [1] 3087161996</code></pre>
-<p>Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (<strong>30.712%</strong>) stays in the podium as the most generous contributors. The other two, Germany (<strong>6.256%</strong>) and UNICEF (<strong>0.414%</strong>), are down (5º Germany) or far down (20º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam, represents a vast proportion of the total amount of money given adding up to <strong>58.722%</strong>. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that that country has given to Vietnam was <strong>341355248 USD</strong>, while the minimum was just <strong>113 USD</strong>. A <strong>385731430.24%</strong> more!</p>
-<p>The total amount Vietnam has received from the 27 donors during the period that goes from 1992 to 2013 (dataset) was <strong>3087161996 USD</strong>.</p>
+<p>Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (<strong>30.712%</strong>) stays in the podium as the most generous contributors. The other two, Germany (<strong>3.643%</strong>) and UNICEF (<strong>0.486%</strong>), are down (7º Germany) or far down (18º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam and Bangladesh, represents a vast proportion of the total amount of money given adding up to <strong>58.722%</strong>. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that that country has given to our both analysed countries was <strong>341355248 USD</strong>, while the minimum was just <strong>113 USD</strong>. A <strong>385731430.24%</strong> more!</p>
+<p>The total amount both countries has received from the 31 donors during the period that goes from 1992 to 2013 (dataset) was <strong>3087161996 USD</strong>.</p>
 </div>
 <div id="data-visualization" class="section level2">
 <h2><span class="header-section-number">6.2</span> Data Visualization</h2>
