@@ -339,7 +339,7 @@ We´re going to explore and gain insights from our data using one of the most ou
 
 The code in this RMarkdown is linted with the [lintr package](https://github.com/jimhester/lintr), which is based on the  [tidyverse style guide](http://style.tidyverse.org/). 
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
 lintr::lint("main.Rmd", linters =
               lintr::with_defaults(
                 commented_code_linter = NULL,
