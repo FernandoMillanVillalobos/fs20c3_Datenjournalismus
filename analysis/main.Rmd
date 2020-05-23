@@ -222,9 +222,10 @@ In this step we are going to transform our imported data in a way that allows us
 
 # Select columns and rows we are interesting in with values different as na´s.
 codes <- c(14000, 14005, 14030, 14050, 14081)
+years <- 1992:2013
 (head(df1 <- df_full %>%
   select(3:8) %>%
-  filter((recipient == "Viet Nam" | recipient == "Bangladesh") & coalesced_purpose_code %in% codes) %>% # Subjects of our analysis are Viet Nam and Bangladesh
+  filter((recipient == "Viet Nam" | recipient == "Bangladesh") & (year %in% years) & coalesced_purpose_code %in% codes) %>% # Subjects of our analysis are Viet Nam and Bangladesh
   na.omit()))
 
 # Select columns and rows of our operational dataset
@@ -255,14 +256,6 @@ df$code <- df$code %>%
 df$activity <- df$activity %>% 
   as_factor() # convert variable activity as factor
 
-df_vietnam <- df %>% 
-  filter(recipient == "Viet Nam") %>% 
-  select(-3)
-
-df_bangladesh <- df %>% 
-  filter(recipient == "Bangladesh") %>% 
-  select(-3)
-
 # Export our operational dataset as filtered csv file
 # write_csv(df, "output/vietnam_bangladesh_wash.csv")
 
@@ -283,10 +276,10 @@ Now we want to describe some important properties of the distribution of the val
   group_by(donor) %>% 
   summarize(
     count = n()
-  ) %>% 
+  ) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
-         pct = round(freq * 100, 1)) %>% 
+         pct = round(freq * 100, 1)) %>%
   select(donor, count, pct))
 
 ```
@@ -314,12 +307,12 @@ select(df, amount) %>%
          pct = round(freq * 100, 3)) %>% 
   select(donor, total_amount, pct, mean, median, max, min))
 
-# Total amount given for all donors to Vietnam from 1992 to 2013
+# Total amount given for all donors to Vietnam and Bangladesh from 1992 to 2013
 (total_amount_donors <- sum(donors_ranking_amount$total_amount))
 
 ```
 
-Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (__`r donors_ranking_amount$pct[1]`%__) stays in the podium as the most generous contributors. The other two, Germany (__`r donors_ranking_amount$pct[7]`%__) and UNICEF (__`r donors_ranking_amount$pct[18]`%__), are down (7º Germany) or far down (18º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam and Bangladesh, represents a vast proportion of the total amount of money given adding up to __`r donors_ranking_amount$pct[1] + donors_ranking_amount$pct[2] + donors_ranking_amount$pct[3]`%__. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that that country has given to our both analysed countries was __`r donors_ranking_amount$max[1]` USD__, while the minimum was just __`r donors_ranking_amount$min[1]` USD__. A __`r donors_ranking_amount$max[1] * donors_ranking_amount$min[1] / 100`%__ more!
+Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (__`r donors_ranking_amount$pct[1]`%__) stays in the podium as the most generous contributors. The other two, Germany (__`r donors_ranking_amount$pct[7]`%__) and UNICEF (__`r donors_ranking_amount$pct[18]`%__), are down (7º Germany) or far down (18º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam and Bangladesh, represents a vast proportion of the total amount of money given adding up to __`r donors_ranking_amount$pct[1] + donors_ranking_amount$pct[2] + donors_ranking_amount$pct[3]`%__. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that country has given to our both analysed recipients was __`r donors_ranking_amount$max[1]` USD__, while the minimum was just __`r donors_ranking_amount$min[1]` USD__. A __`r donors_ranking_amount$max[1] * donors_ranking_amount$min[1] / 100`%__ more!
 
 The total amount both countries has received from the 31 donors during the period that goes from 1992 to 2013 (dataset) was __`r total_amount_donors` USD__.
 
@@ -331,19 +324,6 @@ We´re going to explore and gain insights from our data using one of the most ou
 ```{r donors distribution}
 
 # Distinct donors
-
-
-# p <- ggplot(subset(df, amount > 10000000), aes(x = donor, y = amount)) +
-#   geom_col() +
-#   labs(title = "Mass distribution in Dataset 01") +
-#   coord_cartesian(clip = "off") +
-#   theme_dviz_vgrid() +
-#   theme(
-#     axis.line.x = element_blank(),
-#     plot.margin = margin(3, 7, 3, 1.5)
-#   ) +
-#   coord_flip()
-# p
 
 ```
 
