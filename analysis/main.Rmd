@@ -304,7 +304,7 @@ select(df, amount) %>%
   ) %>% 
   arrange(desc(total_amount)) %>% 
   mutate(freq = total_amount / sum(total_amount),
-         pct = round(freq * 100, 3)) %>% 
+         pct = round(freq * 100, 4)) %>% 
   select(donor, total_amount, pct, mean, median, max, min))
 
 # Total amount given for all donors to Vietnam and Bangladesh from 1992 to 2013
