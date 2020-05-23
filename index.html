@@ -1614,7 +1614,7 @@ div.tocify {
 
 <div id="notes" class="section level1">
 <h1><span class="header-section-number">1</span> Notes</h1>
-<p>This report was generated on 2020-05-23 12:18:29. R version: 4.0.0 on x86_64-w64-mingw32. For this report, CRAN packages as of 2020-04-01 were used.</p>
+<p>This report was generated on 2020-05-23 17:26:00. R version: 4.0.0 on x86_64-w64-mingw32. For this report, CRAN packages as of 2020-04-01 were used.</p>
 <div id="r-script-data" class="section level2">
 <h2><span class="header-section-number">1.1</span> R-Script &amp; data</h2>
 <p>The preprocessing and analysis of the data was conducted in the <a href="https://www.r-project.org/">R project for statistical computing</a>. The RMarkdown script used to generate this document and all the resulting data can be downloaded <a href="http://FernandoMillanVillalobos.github.io/fs20c3_datenjournalismus/">under this link</a>. Through executing <code>main.Rmd</code>, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder <code>input</code> will be processed and results will be written to <code>output</code>. The html on-line version of the analysis can be accessed through this <a href="https://FernandoMillanVillalobos.github.io/fs20c3_datenjournalismus/">link</a>.</p>
@@ -1900,9 +1900,10 @@ df_full &lt;- read_csv(&quot;input/AidDataCoreThin_ResearchRelease_Level1_v3.1.c
 
 # Select columns and rows we are interesting in with values different as na´s.
 codes &lt;- c(14000, 14005, 14030, 14050, 14081)
+years &lt;- 1992:2013
 (head(df1 &lt;- df_full %&gt;%
   select(3:8) %&gt;%
-  filter((recipient == &quot;Viet Nam&quot; | recipient == &quot;Bangladesh&quot;) &amp; coalesced_purpose_code %in% codes) %&gt;% # Subjects of our analysis are Viet Nam and Bangladesh
+  filter((recipient == &quot;Viet Nam&quot; | recipient == &quot;Bangladesh&quot;) &amp; (year %in% years) &amp; coalesced_purpose_code %in% codes) %&gt;% # Subjects of our analysis are Viet Nam and Bangladesh
   na.omit()))</code></pre>
 <div class="kable-table">
 <table>
@@ -1934,14 +1935,6 @@ codes &lt;- c(14000, 14005, 14030, 14050, 14081)
 <td align="left">Water Supply and Sanitation, purpose unspecified or does not fit under any other applicable codes</td>
 </tr>
 <tr class="odd">
-<td align="right">1981</td>
-<td align="left">Asian Development Bank (ASDB)</td>
-<td align="left">Bangladesh</td>
-<td align="right">1040441</td>
-<td align="right">14030</td>
-<td align="left">Basic drinking water supply and basic sanitation</td>
-</tr>
-<tr class="even">
 <td align="right">1993</td>
 <td align="left">Asian Development Bank (ASDB)</td>
 <td align="left">Bangladesh</td>
@@ -1949,7 +1942,7 @@ codes &lt;- c(14000, 14005, 14030, 14050, 14081)
 <td align="right">14005</td>
 <td align="left">Water Supply and Sanitation, purpose unspecified or does not fit under any other applicable codes</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right">1996</td>
 <td align="left">OPEC Fund for International Development (OFID)</td>
 <td align="left">Viet Nam</td>
@@ -1957,11 +1950,19 @@ codes &lt;- c(14000, 14005, 14030, 14050, 14081)
 <td align="right">14030</td>
 <td align="left">Basic drinking water supply and basic sanitation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="right">1995</td>
 <td align="left">Asian Development Fund (ASDF)</td>
 <td align="left">Bangladesh</td>
 <td align="right">42792828</td>
+<td align="right">14030</td>
+<td align="left">Basic drinking water supply and basic sanitation</td>
+</tr>
+<tr class="even">
+<td align="right">1995</td>
+<td align="left">International Fund for Agricultural Development (IFAD)</td>
+<td align="left">Bangladesh</td>
+<td align="right">13907669</td>
 <td align="right">14030</td>
 <td align="left">Basic drinking water supply and basic sanitation</td>
 </tr>
@@ -2001,14 +2002,6 @@ codes &lt;- c(14000, 14005, 14030, 14050, 14081)
 <td align="left">Water Supply and Sanitation, purpose unspecified or does not fit under any other applicable codes</td>
 </tr>
 <tr class="odd">
-<td align="right">1981</td>
-<td align="left">Asian Development Bank (ASDB)</td>
-<td align="left">Bangladesh</td>
-<td align="right">1040441</td>
-<td align="right">14030</td>
-<td align="left">Basic drinking water supply and basic sanitation</td>
-</tr>
-<tr class="even">
 <td align="right">1993</td>
 <td align="left">Asian Development Bank (ASDB)</td>
 <td align="left">Bangladesh</td>
@@ -2016,7 +2009,7 @@ codes &lt;- c(14000, 14005, 14030, 14050, 14081)
 <td align="right">14005</td>
 <td align="left">Water Supply and Sanitation, purpose unspecified or does not fit under any other applicable codes</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right">1996</td>
 <td align="left">OPEC Fund for International Development (OFID)</td>
 <td align="left">Viet Nam</td>
@@ -2024,11 +2017,19 @@ codes &lt;- c(14000, 14005, 14030, 14050, 14081)
 <td align="right">14030</td>
 <td align="left">Basic drinking water supply and basic sanitation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="right">1995</td>
 <td align="left">Asian Development Fund (ASDF)</td>
 <td align="left">Bangladesh</td>
 <td align="right">42792828</td>
+<td align="right">14030</td>
+<td align="left">Basic drinking water supply and basic sanitation</td>
+</tr>
+<tr class="even">
+<td align="right">1995</td>
+<td align="left">International Fund for Agricultural Development (IFAD)</td>
+<td align="left">Bangladesh</td>
+<td align="right">13907669</td>
 <td align="right">14030</td>
 <td align="left">Basic drinking water supply and basic sanitation</td>
 </tr>
@@ -2059,14 +2060,6 @@ df$code &lt;- df$code %&gt;%
 df$activity &lt;- df$activity %&gt;% 
   as_factor() # convert variable activity as factor
 
-df_vietnam &lt;- df %&gt;% 
-  filter(recipient == &quot;Viet Nam&quot;) %&gt;% 
-  select(-3)
-
-df_bangladesh &lt;- df %&gt;% 
-  filter(recipient == &quot;Bangladesh&quot;) %&gt;% 
-  select(-3)
-
 # Export our operational dataset as filtered csv file
 # write_csv(df, &quot;output/vietnam_bangladesh_wash.csv&quot;)</code></pre>
 </div>
@@ -2084,10 +2077,10 @@ df_bangladesh &lt;- df %&gt;%
   group_by(donor) %&gt;% 
   summarize(
     count = n()
-  ) %&gt;% 
+  ) %&gt;%
   arrange(desc(count)) %&gt;%
   mutate(freq = count / sum(count),
-         pct = round(freq * 100, 1)) %&gt;% 
+         pct = round(freq * 100, 1)) %&gt;%
   select(donor, count, pct))</code></pre>
 <div class="kable-table">
 <table>
@@ -2102,22 +2095,22 @@ df_bangladesh &lt;- df %&gt;%
 <tr class="odd">
 <td align="left">UNICEF</td>
 <td align="right">126</td>
-<td align="right">22.4</td>
+<td align="right">22.6</td>
 </tr>
 <tr class="even">
 <td align="left">Germany</td>
 <td align="right">68</td>
-<td align="right">12.1</td>
+<td align="right">12.2</td>
 </tr>
 <tr class="odd">
 <td align="left">Japan</td>
-<td align="right">40</td>
-<td align="right">7.1</td>
+<td align="right">39</td>
+<td align="right">7.0</td>
 </tr>
 <tr class="even">
 <td align="left">Australia</td>
 <td align="right">39</td>
-<td align="right">6.9</td>
+<td align="right">7.0</td>
 </tr>
 <tr class="odd">
 <td align="left">Denmark</td>
@@ -2132,25 +2125,25 @@ df_bangladesh &lt;- df %&gt;%
 <tr class="odd">
 <td align="left">Finland</td>
 <td align="right">26</td>
-<td align="right">4.6</td>
+<td align="right">4.7</td>
 </tr>
 <tr class="even">
 <td align="left">Belgium</td>
 <td align="right">25</td>
-<td align="right">4.4</td>
+<td align="right">4.5</td>
 </tr>
 <tr class="odd">
 <td align="left">Netherlands</td>
-<td align="right">22</td>
-<td align="right">3.9</td>
+<td align="right">21</td>
+<td align="right">3.8</td>
 </tr>
 <tr class="even">
-<td align="left">Switzerland</td>
-<td align="right">21</td>
-<td align="right">3.7</td>
+<td align="left">Norway</td>
+<td align="right">20</td>
+<td align="right">3.6</td>
 </tr>
 <tr class="odd">
-<td align="left">Norway</td>
+<td align="left">Switzerland</td>
 <td align="right">20</td>
 <td align="right">3.6</td>
 </tr>
@@ -2162,12 +2155,12 @@ df_bangladesh &lt;- df %&gt;%
 <tr class="odd">
 <td align="left">United Kingdom</td>
 <td align="right">16</td>
-<td align="right">2.8</td>
+<td align="right">2.9</td>
 </tr>
 <tr class="even">
 <td align="left">ASDB</td>
-<td align="right">14</td>
-<td align="right">2.5</td>
+<td align="right">13</td>
+<td align="right">2.3</td>
 </tr>
 <tr class="odd">
 <td align="left">Italy</td>
@@ -2177,12 +2170,12 @@ df_bangladesh &lt;- df %&gt;%
 <tr class="even">
 <td align="left">Sweden</td>
 <td align="right">12</td>
-<td align="right">2.1</td>
+<td align="right">2.2</td>
 </tr>
 <tr class="odd">
 <td align="left">Spain</td>
 <td align="right">7</td>
-<td align="right">1.2</td>
+<td align="right">1.3</td>
 </tr>
 <tr class="even">
 <td align="left">AsDB</td>
@@ -2201,8 +2194,8 @@ df_bangladesh &lt;- df %&gt;%
 </tr>
 <tr class="odd">
 <td align="left">Canada</td>
-<td align="right">5</td>
-<td align="right">0.9</td>
+<td align="right">4</td>
+<td align="right">0.7</td>
 </tr>
 <tr class="even">
 <td align="left">United States</td>
@@ -2257,7 +2250,7 @@ df_bangladesh &lt;- df %&gt;%
 </tbody>
 </table>
 </div>
-<p>From our primary data exploration we can see that there´re a total of <strong>31</strong>. Donors that have contributed more frequently are UNICEF (<strong>22.4%</strong>) , Germany (<strong>12.1%</strong>) and Japan (<strong>7.1%</strong>). These three main donors represent together up to <strong>41.6%</strong> from all contributions. On the other hand, donors like New Zealand (<strong>0.2%</strong>), United Arab Emirates (<strong>0.2%</strong>) and IFAD (<strong>0.2%</strong>) are located at the bottom of the distribution with an all together total percentage of less than <strong>1%</strong>.</p>
+<p>From our primary data exploration we can see that there´re a total of <strong>31</strong>. Donors that have contributed more frequently are UNICEF (<strong>22.6%</strong>) , Germany (<strong>12.2%</strong>) and Japan (<strong>7%</strong>). These three main donors represent together up to <strong>41.8%</strong> from all contributions. On the other hand, donors like New Zealand (<strong>0.2%</strong>), United Arab Emirates (<strong>0.2%</strong>) and IFAD (<strong>0.2%</strong>) are located at the bottom of the distribution with an all together total percentage of less than <strong>1%</strong>.</p>
 <pre class="r"><code># Finding the most common values of our quantitative variable in our sample.
 select(df, amount) %&gt;%
   summarise_each(list(max = max, min = min, mean = mean, median = median, var = var, sd = sd, IQR = IQR))</code></pre>
@@ -2278,11 +2271,11 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="right">341355248</td>
 <td align="right">19</td>
-<td align="right">5483414</td>
-<td align="right">122936</td>
-<td align="right">672897613640934</td>
-<td align="right">25940270</td>
-<td align="right">1018665</td>
+<td align="right">5432362</td>
+<td align="right">122456.5</td>
+<td align="right">676880696182605</td>
+<td align="right">26016931</td>
+<td align="right">950428.2</td>
 </tr>
 </tbody>
 </table>
@@ -2317,27 +2310,27 @@ select(df, amount) %&gt;%
 <tbody>
 <tr class="odd">
 <td align="left">Japan</td>
-<td align="right">948128352</td>
-<td align="right">30.712</td>
-<td align="right">23703208.8</td>
-<td align="right">101621.5</td>
+<td align="right">909821461</td>
+<td align="right">30.015</td>
+<td align="right">23328755.41</td>
+<td align="right">87184.0</td>
 <td align="right">341355248</td>
 <td align="right">113</td>
 </tr>
 <tr class="even">
 <td align="left">IDA</td>
 <td align="right">469743273</td>
-<td align="right">15.216</td>
-<td align="right">93948654.6</td>
+<td align="right">15.497</td>
+<td align="right">93948654.60</td>
 <td align="right">95877868.0</td>
 <td align="right">204415458</td>
 <td align="right">1533116</td>
 </tr>
 <tr class="odd">
 <td align="left">ASDB</td>
-<td align="right">394976291</td>
-<td align="right">12.794</td>
-<td align="right">28212592.2</td>
+<td align="right">393935850</td>
+<td align="right">12.996</td>
+<td align="right">30302757.69</td>
 <td align="right">835006.0</td>
 <td align="right">208415258</td>
 <td align="right">494</td>
@@ -2345,8 +2338,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">Denmark</td>
 <td align="right">251442355</td>
-<td align="right">8.145</td>
-<td align="right">8980084.1</td>
+<td align="right">8.295</td>
+<td align="right">8980084.11</td>
 <td align="right">2420195.0</td>
 <td align="right">62723129</td>
 <td align="right">60952</td>
@@ -2354,8 +2347,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">United Kingdom</td>
 <td align="right">193134424</td>
-<td align="right">6.256</td>
-<td align="right">12070901.5</td>
+<td align="right">6.371</td>
+<td align="right">12070901.50</td>
 <td align="right">2703994.5</td>
 <td align="right">63577280</td>
 <td align="right">104606</td>
@@ -2363,8 +2356,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">ASDF</td>
 <td align="right">188360400</td>
-<td align="right">6.101</td>
-<td align="right">62786800.0</td>
+<td align="right">6.214</td>
+<td align="right">62786800.00</td>
 <td align="right">55309088.0</td>
 <td align="right">90258484</td>
 <td align="right">42792828</td>
@@ -2372,8 +2365,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">Germany</td>
 <td align="right">112467377</td>
-<td align="right">3.643</td>
-<td align="right">1653932.0</td>
+<td align="right">3.710</td>
+<td align="right">1653932.01</td>
 <td align="right">123068.5</td>
 <td align="right">60363828</td>
 <td align="right">1051</td>
@@ -2381,8 +2374,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">Australia</td>
 <td align="right">108437055</td>
-<td align="right">3.513</td>
-<td align="right">2780437.3</td>
+<td align="right">3.577</td>
+<td align="right">2780437.31</td>
 <td align="right">292682.0</td>
 <td align="right">21981183</td>
 <td align="right">2649</td>
@@ -2390,35 +2383,35 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">Finland</td>
 <td align="right">83185295</td>
-<td align="right">2.695</td>
-<td align="right">3199434.4</td>
+<td align="right">2.744</td>
+<td align="right">3199434.42</td>
 <td align="right">205871.5</td>
 <td align="right">21756606</td>
 <td align="right">2735</td>
 </tr>
 <tr class="even">
 <td align="left">Switzerland</td>
-<td align="right">76750215</td>
-<td align="right">2.486</td>
-<td align="right">3654772.1</td>
-<td align="right">2259686.0</td>
+<td align="right">65767420</td>
+<td align="right">2.170</td>
+<td align="right">3288371.00</td>
+<td align="right">1978061.5</td>
 <td align="right">15486200</td>
 <td align="right">50542</td>
 </tr>
 <tr class="odd">
 <td align="left">Netherlands</td>
-<td align="right">54719593</td>
-<td align="right">1.772</td>
-<td align="right">2487254.2</td>
-<td align="right">207627.5</td>
+<td align="right">50803351</td>
+<td align="right">1.676</td>
+<td align="right">2419207.19</td>
+<td align="right">191700.0</td>
 <td align="right">18259485</td>
 <td align="right">1589</td>
 </tr>
 <tr class="even">
 <td align="left">Korea</td>
 <td align="right">31486997</td>
-<td align="right">1.020</td>
-<td align="right">1852176.3</td>
+<td align="right">1.039</td>
+<td align="right">1852176.29</td>
 <td align="right">53695.0</td>
 <td align="right">25599209</td>
 <td align="right">6966</td>
@@ -2426,8 +2419,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">AsDB</td>
 <td align="right">29207628</td>
-<td align="right">0.946</td>
-<td align="right">5841525.6</td>
+<td align="right">0.964</td>
+<td align="right">5841525.60</td>
 <td align="right">6390090.0</td>
 <td align="right">14264648</td>
 <td align="right">491545</td>
@@ -2435,8 +2428,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">Belgium</td>
 <td align="right">22764482</td>
-<td align="right">0.737</td>
-<td align="right">910579.3</td>
+<td align="right">0.751</td>
+<td align="right">910579.28</td>
 <td align="right">197829.0</td>
 <td align="right">10986005</td>
 <td align="right">413</td>
@@ -2444,8 +2437,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">France</td>
 <td align="right">20517428</td>
-<td align="right">0.665</td>
-<td align="right">759904.7</td>
+<td align="right">0.677</td>
+<td align="right">759904.74</td>
 <td align="right">74159.0</td>
 <td align="right">13889113</td>
 <td align="right">2114</td>
@@ -2453,8 +2446,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">Italy</td>
 <td align="right">20375455</td>
-<td align="right">0.660</td>
-<td align="right">1567342.7</td>
+<td align="right">0.672</td>
+<td align="right">1567342.69</td>
 <td align="right">32059.0</td>
 <td align="right">19222480</td>
 <td align="right">204</td>
@@ -2462,8 +2455,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">Sweden</td>
 <td align="right">15320577</td>
-<td align="right">0.496</td>
-<td align="right">1276714.8</td>
+<td align="right">0.505</td>
+<td align="right">1276714.75</td>
 <td align="right">202835.5</td>
 <td align="right">6318190</td>
 <td align="right">24250</td>
@@ -2471,8 +2464,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">UNICEF</td>
 <td align="right">14990198</td>
-<td align="right">0.486</td>
-<td align="right">118969.8</td>
+<td align="right">0.495</td>
+<td align="right">118969.83</td>
 <td align="right">15667.5</td>
 <td align="right">3184189</td>
 <td align="right">19</td>
@@ -2480,8 +2473,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">IFAD</td>
 <td align="right">13907669</td>
-<td align="right">0.451</td>
-<td align="right">13907669.0</td>
+<td align="right">0.459</td>
+<td align="right">13907669.00</td>
 <td align="right">13907669.0</td>
 <td align="right">13907669</td>
 <td align="right">13907669</td>
@@ -2489,8 +2482,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">Spain</td>
 <td align="right">12788206</td>
-<td align="right">0.414</td>
-<td align="right">1826886.6</td>
+<td align="right">0.422</td>
+<td align="right">1826886.57</td>
 <td align="right">103808.0</td>
 <td align="right">8184953</td>
 <td align="right">62956</td>
@@ -2498,8 +2491,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">Norway</td>
 <td align="right">11169762</td>
-<td align="right">0.362</td>
-<td align="right">558488.1</td>
+<td align="right">0.368</td>
+<td align="right">558488.10</td>
 <td align="right">94787.0</td>
 <td align="right">2974614</td>
 <td align="right">4115</td>
@@ -2507,8 +2500,8 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">B&amp;M</td>
 <td align="right">4011180</td>
-<td align="right">0.130</td>
-<td align="right">802236.0</td>
+<td align="right">0.132</td>
+<td align="right">802236.00</td>
 <td align="right">722613.0</td>
 <td align="right">1497203</td>
 <td align="right">41137</td>
@@ -2516,8 +2509,8 @@ select(df, amount) %&gt;%
 <tr class="odd">
 <td align="left">GEF</td>
 <td align="right">2993512</td>
-<td align="right">0.097</td>
-<td align="right">1496756.0</td>
+<td align="right">0.099</td>
+<td align="right">1496756.00</td>
 <td align="right">1496756.0</td>
 <td align="right">2949273</td>
 <td align="right">44239</td>
@@ -2525,71 +2518,71 @@ select(df, amount) %&gt;%
 <tr class="even">
 <td align="left">EC</td>
 <td align="right">2079758</td>
-<td align="right">0.067</td>
-<td align="right">693252.7</td>
+<td align="right">0.069</td>
+<td align="right">693252.67</td>
 <td align="right">567959.0</td>
 <td align="right">1351679</td>
 <td align="right">160120</td>
 </tr>
 <tr class="odd">
-<td align="left">Canada</td>
-<td align="right">1674456</td>
-<td align="right">0.054</td>
-<td align="right">334891.2</td>
-<td align="right">6113.0</td>
-<td align="right">1657593</td>
-<td align="right">401</td>
-</tr>
-<tr class="even">
 <td align="left">Luxembourg</td>
 <td align="right">993774</td>
-<td align="right">0.032</td>
-<td align="right">248443.5</td>
+<td align="right">0.033</td>
+<td align="right">248443.50</td>
 <td align="right">94495.0</td>
 <td align="right">796252</td>
 <td align="right">8532</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">New Zealand</td>
 <td align="right">552748</td>
 <td align="right">0.018</td>
-<td align="right">552748.0</td>
+<td align="right">552748.00</td>
 <td align="right">552748.0</td>
 <td align="right">552748</td>
 <td align="right">552748</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Czech Republic</td>
 <td align="right">428619</td>
 <td align="right">0.014</td>
-<td align="right">214309.5</td>
+<td align="right">214309.50</td>
 <td align="right">214309.5</td>
 <td align="right">343740</td>
 <td align="right">84879</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">United States</td>
 <td align="right">406231</td>
 <td align="right">0.013</td>
-<td align="right">101557.8</td>
+<td align="right">101557.75</td>
 <td align="right">101470.0</td>
 <td align="right">177053</td>
 <td align="right">26238</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">OFID</td>
 <td align="right">139168</td>
 <td align="right">0.005</td>
-<td align="right">139168.0</td>
+<td align="right">139168.00</td>
 <td align="right">139168.0</td>
 <td align="right">139168</td>
 <td align="right">139168</td>
+</tr>
+<tr class="even">
+<td align="left">Canada</td>
+<td align="right">16863</td>
+<td align="right">0.001</td>
+<td align="right">4215.75</td>
+<td align="right">5174.5</td>
+<td align="right">6113</td>
+<td align="right">401</td>
 </tr>
 <tr class="odd">
 <td align="left">United Arab Emirates</td>
 <td align="right">9518</td>
 <td align="right">0.000</td>
-<td align="right">9518.0</td>
+<td align="right">9518.00</td>
 <td align="right">9518.0</td>
 <td align="right">9518</td>
 <td align="right">9518</td>
@@ -2597,31 +2590,18 @@ select(df, amount) %&gt;%
 </tbody>
 </table>
 </div>
-<pre class="r"><code># Total amount given for all donors to Vietnam from 1992 to 2013
+<pre class="r"><code># Total amount given for all donors to Vietnam and Bangladesh from 1992 to 2013
 (total_amount_donors &lt;- sum(donors_ranking_amount$total_amount))</code></pre>
-<pre><code>## [1] 3087161996</code></pre>
-<p>Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (<strong>30.712%</strong>) stays in the podium as the most generous contributors. The other two, Germany (<strong>3.643%</strong>) and UNICEF (<strong>0.486%</strong>), are down (7º Germany) or far down (18º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam and Bangladesh, represents a vast proportion of the total amount of money given adding up to <strong>58.722%</strong>. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that that country has given to our both analysed countries was <strong>341355248 USD</strong>, while the minimum was just <strong>113 USD</strong>. A <strong>385731430.24%</strong> more!</p>
-<p>The total amount both countries has received from the 31 donors during the period that goes from 1992 to 2013 (dataset) was <strong>3087161996 USD</strong>.</p>
+<pre><code>## [1] 3031258034</code></pre>
+<p>Looking at our first preliminary summarized results for the variable amount, we can see that surprisingly, among the more frequent donors, just Japan (<strong>30.015%</strong>) stays in the podium as the most generous contributors. The other two, Germany (<strong>3.71%</strong>) and UNICEF (<strong>0.495%</strong>), are down (7º Germany) or far down (18º UNICEF) the list. Just as we saw before, together the three main donors (1º Japan, 2º IDA and 3º ASDB) regarding the amount of money they´ve given in the past two decades to Vietnam and Bangladesh, represents a vast proportion of the total amount of money given adding up to <strong>58.508%</strong>. Another thing that catched our eye was the huge difference between max and min values. Let´s take our main contributor, Japan, as example. The maximum amount of money that country has given to our both analysed recipients was <strong>341355248 USD</strong>, while the minimum was just <strong>113 USD</strong>. A <strong>385731430.24%</strong> more!</p>
+<p>The total amount both countries has received from the 31 donors during the period that goes from 1992 to 2013 (dataset) was <strong>3031258034 USD</strong>.</p>
 </div>
 <div id="data-visualization" class="section level2">
 <h2><span class="header-section-number">6.2</span> Data Visualization</h2>
 <p>We´re going to explore and gain insights from our data using one of the most outstanding ability of human beings: capturing visual patterns. Let´s explore distributions of key variables (donor, amount and activity), associations among them and time development in our dataset.</p>
 <div id="donors-distribution" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> Donors Distribution</h3>
-<pre class="r"><code># Distinct donors
-
-
-# p &lt;- ggplot(subset(df, amount &gt; 10000000), aes(x = donor, y = amount)) +
-#   geom_col() +
-#   labs(title = &quot;Mass distribution in Dataset 01&quot;) +
-#   coord_cartesian(clip = &quot;off&quot;) +
-#   theme_dviz_vgrid() +
-#   theme(
-#     axis.line.x = element_blank(),
-#     plot.margin = margin(3, 7, 3, 1.5)
-#   ) +
-#   coord_flip()
-# p</code></pre>
+<pre class="r"><code># Distinct donors</code></pre>
 </div>
 </div>
 <div id="linting" class="section level2">
