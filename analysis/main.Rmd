@@ -222,14 +222,14 @@ In this step we are going to transform our imported data in a way that allows us
 
 # Select columns and rows we are interesting in with values different as na´s.
 codes <- c(14000, 14005, 14030, 14050, 14081)
-(df1 <- df_full %>%
+(head(df1 <- df_full %>%
   select(3:8) %>%
   filter((recipient == "Viet Nam" | recipient == "Bangladesh") & coalesced_purpose_code %in% codes) %>% # Subjects of our analysis are Viet Nam and Bangladesh
-  na.omit())
+  na.omit()))
 
 # Select columns and rows of our operational dataset
-(df <- df1 %>%
-  rename(amount = commitment_amount_usd_constant, code = coalesced_purpose_code, activity = coalesced_purpose_name))
+(head(df <- df1 %>%
+  rename(amount = commitment_amount_usd_constant, code = coalesced_purpose_code, activity = coalesced_purpose_name)))
 
 df$donor <- df$donor %>% 
   as_factor() %>% # convert variable donor as factor
