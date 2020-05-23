@@ -1614,7 +1614,7 @@ div.tocify {
 
 <div id="notes" class="section level1">
 <h1><span class="header-section-number">1</span> Notes</h1>
-<p>This report was generated on 2020-05-23 12:12:50. R version: 4.0.0 on x86_64-w64-mingw32. For this report, CRAN packages as of 2020-04-01 were used.</p>
+<p>This report was generated on 2020-05-23 12:18:29. R version: 4.0.0 on x86_64-w64-mingw32. For this report, CRAN packages as of 2020-04-01 were used.</p>
 <div id="r-script-data" class="section level2">
 <h2><span class="header-section-number">1.1</span> R-Script &amp; data</h2>
 <p>The preprocessing and analysis of the data was conducted in the <a href="https://www.r-project.org/">R project for statistical computing</a>. The RMarkdown script used to generate this document and all the resulting data can be downloaded <a href="http://FernandoMillanVillalobos.github.io/fs20c3_datenjournalismus/">under this link</a>. Through executing <code>main.Rmd</code>, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder <code>input</code> will be processed and results will be written to <code>output</code>. The html on-line version of the analysis can be accessed through this <a href="https://FernandoMillanVillalobos.github.io/fs20c3_datenjournalismus/">link</a>.</p>
@@ -2060,10 +2060,12 @@ df$activity &lt;- df$activity %&gt;%
   as_factor() # convert variable activity as factor
 
 df_vietnam &lt;- df %&gt;% 
-  filter(recipient == &quot;Viet Nam&quot;)
+  filter(recipient == &quot;Viet Nam&quot;) %&gt;% 
+  select(-3)
 
 df_bangladesh &lt;- df %&gt;% 
-  filter(recipient == &quot;Bangladesh&quot;)
+  filter(recipient == &quot;Bangladesh&quot;) %&gt;% 
+  select(-3)
 
 # Export our operational dataset as filtered csv file
 # write_csv(df, &quot;output/vietnam_bangladesh_wash.csv&quot;)</code></pre>

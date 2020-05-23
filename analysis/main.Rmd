@@ -256,10 +256,12 @@ df$activity <- df$activity %>%
   as_factor() # convert variable activity as factor
 
 df_vietnam <- df %>% 
-  filter(recipient == "Viet Nam")
+  filter(recipient == "Viet Nam") %>% 
+  select(-3)
 
 df_bangladesh <- df %>% 
-  filter(recipient == "Bangladesh")
+  filter(recipient == "Bangladesh") %>% 
+  select(-3)
 
 # Export our operational dataset as filtered csv file
 # write_csv(df, "output/vietnam_bangladesh_wash.csv")
