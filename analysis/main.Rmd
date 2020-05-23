@@ -49,13 +49,13 @@ The code for the herein described process can also be freely downloaded from [ht
 
 ## Data description of output files
 
-### `vietnam_water_sanitation.csv`
+### `vietnam_bangladesh_wash.csv`
 
-| year  | donor       | amount    | code  | activity                              |
-|-------|-------------|-----------------------------------------------------------|
-| 1997  | ASDB        | 3922870   | 14005 | Water Supply and Sanitation...        |
-| 1996	| OFID        |	139168    | 14030 | Basic drinking water supply...        |
-| 1996	| ASDB	      | 835006    | 14005 | Water Supply and Sanitation...        |
+| year  | donor       | recipient  | amount   | code  | activity                              |
+|-------|-------------|-----------------------------------------------------------------------|
+| 2001  | ASDF        | Bangladesh | 55309088 | 14030 | Basic drinking water supply...        |
+| 1997	| ASDB        | Viet Nam   | 3922870  | 14005 | Water Supply and Sanitation...        |
+| 1981	| ASDB	      | Bangladesh | 1040441  | 14030 | Basic drinking water supply...        |
 
 ...
 
@@ -224,12 +224,11 @@ In this step we are going to transform our imported data in a way that allows us
 codes <- c(14000, 14005, 14030, 14050, 14081)
 (df1 <- df_full %>%
   select(3:8) %>%
-  filter(recipient == "Viet Nam" & coalesced_purpose_code %in% codes) %>%
+  filter((recipient == "Viet Nam" | recipient == "Bangladesh") & coalesced_purpose_code %in% codes) %>% # Subjects of our analysis are Viet Nam and Bangladesh
   na.omit())
 
 # Select columns and rows of our operational dataset
 (df <- df1 %>%
-  select(-3) %>% # select all the columns except 'recipient'
   rename(amount = commitment_amount_usd_constant, code = coalesced_purpose_code, activity = coalesced_purpose_name))
 
 df$donor <- df$donor %>% 
@@ -250,8 +249,14 @@ df$code <- df$code %>%
 df$activity <- df$activity %>% 
   as_factor() # convert variable activity as factor
 
+df_vietnam <- df %>% 
+  filter(recipient == "Viet Nam")
+
+df_bangladesh <- df %>% 
+  filter(recipient == "Bangladesh")
+
 # Export our operational dataset as filtered csv file
-#write_csv(df, "output/vietnam_water_sanitation.csv")
+# write_csv(df, "output/vietnam_bangladesh_wash.csv")
 
 ```
 
