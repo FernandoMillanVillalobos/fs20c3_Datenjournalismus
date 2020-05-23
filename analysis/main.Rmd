@@ -240,7 +240,10 @@ df$donor <- df$donor %>%
     "World Bank - International Development Association (IDA)" = "IDA",
     "United Nations Children`s Fund (UNICEF)" = "UNICEF",
     "OPEC Fund for International Development (OFID)" = "OFID",
-    "European Communities (EC)" = "EC"
+    "European Communities (EC)" = "EC",
+    "International Fund for Agricultural Development (IFAD)" = "IFAD",
+    "Bill & Melinda Gates Foundation" = "B&M",
+    "Global Environment Facility (GEF)" = "GEF"
   )
 
 df$code <- df$code %>% 
@@ -283,7 +286,7 @@ Now we want to describe some important properties of the distribution of the val
 
 ```
 
-From our primary data exploration we can see that there´re a total of __`r distinct_donors`__. Donors that have contributed more frequently are Germany (__`r donors_contrib$pct[1]`%__) , UNICEF (__`r donors_contrib$pct[2]`%__) and Japan (__`r donors_contrib$pct[3]`%__). These three main donors represent together up to __`r donors_contrib$pct[1] + donors_contrib$pct[2] + donors_contrib$pct[3]`%__ from all contributions. On the other hand, donors like New Zealand (__`r donors_contrib$pct[27]`%__), EC (__`r donors_contrib$pct[26]`%__) and OFID (__`r donors_contrib$pct[25]`%__) are located at the bottom of the distribution with an all together total percentage of less than __1%__.
+From our primary data exploration we can see that there´re a total of __`r distinct_donors`__. Donors that have contributed more frequently are UNICEF (__`r donors_contrib$pct[1]`%__) , Germany (__`r donors_contrib$pct[2]`%__) and Japan (__`r donors_contrib$pct[3]`%__). These three main donors represent together up to __`r donors_contrib$pct[1] + donors_contrib$pct[2] + donors_contrib$pct[3]`%__ from all contributions. On the other hand, donors like New Zealand (__`r donors_contrib$pct[31]`%__), United Arab Emirates (__`r donors_contrib$pct[30]`%__) and OFID (__`r donors_contrib$pct[25]`%__) are located at the bottom of the distribution with an all together total percentage of less than __1%__.
 
 ```{r data summarising amount}
 
