@@ -246,6 +246,9 @@ df$donor <- df$donor %>%
     "Global Environment Facility (GEF)" = "GEF"
   )
 
+df$recipient <- df$recipient %>% 
+  as_factor() # convert variable recipient as factor
+
 df$code <- df$code %>% 
   as_factor() # convert variable code as factor
 
