@@ -336,7 +336,7 @@ p1 <-ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
-  labs(title = "Frequency contributions (from total)",
+  labs(title = "Contributions frequency (from total)",
        subtitle = "WASH contributions for Viet Nam and Bangladesh") +
   coord_flip(clip = "off") +
   theme_dviz_vgrid(rel_small = .7) +
@@ -365,7 +365,7 @@ p2 <- ggplot(donors_contrib_per_recipient, aes(x = fct_reorder(recipient, desc(p
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, .5, .5, 2)) +
-  labs(title = "Total donor´s contributions per recipient",
+  labs(title = "Total donors´ contributions per recipient",
        subtitle = paste("Viet Nam:", donors_contrib_per_recipient$pct[1],"; Bangladesh:", donors_contrib_per_recipient$pct[2])) +
   theme_dviz_hgrid(rel_small = 1) +
   theme(
@@ -394,7 +394,7 @@ p3 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient
     values = c("#22577a", "#f2ac18"),
     name = NULL,
     guide = guide_legend(direction = "horizontal")) +
-  labs(title = "Total donor´s contributions density per recipient") +
+  labs(title = "Total donors´ contributions density per recipient") +
   theme_dviz_hgrid() +
   theme(
     axis.line.x = element_blank(),
@@ -417,7 +417,7 @@ p4 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient
     values = c("#22577a", "#f2ac18"),
     name = NULL,
     guide = NULL) +
-  labs(title = "Total donor´s contributions density per recipient") +
+  labs(title = "Donors´ contributions density per recipient") +
   facet_wrap(~recipient) +
   theme_dviz_hgrid() +
   theme(
@@ -453,7 +453,7 @@ p5 <- ggplot(donors_contrib_timeline_recipient, aes(x = year, y = count, color =
     values = c("#22577a", "#f2ac18"),
     name = NULL) +
   labs(
-    title = "Donor´s contributions timeline per recipient") +
+    title = "Donors´ contributions timeline per recipient") +
   theme_dviz_open() +
   theme(
     plot.margin = margin(7, 7, 3, 1.5),
