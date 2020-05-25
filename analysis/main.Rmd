@@ -118,12 +118,14 @@ if (Sys.getenv("RSTUDIO") == "1") {
 cat("
 library(rstudioapi)
 library(tidyverse) # ggplot2, dplyr, tidyr, readr, purrr, tibble, magrittr, readxl
+library(lubridate)
 library(scales) # scales for ggplot2
 library(jsonlite) # json
 library(lintr) # code linting
 library(sf) # spatial data handling
 library(rmarkdown)
 library(cowplot) # theme
+library(ggridges) # density plots
 library(extrafont)", # fonts
 file = "manifest.R")
 ```
@@ -324,6 +326,7 @@ We´re going to explore and gain insights from our data using one of the most ou
 ```{r donors distribution}
 
 # Distribution donors total contributions
+# Bar plot
 p1 <-
   ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
@@ -331,8 +334,7 @@ p1 <-
     expand = c(0, 0),
     breaks = seq(0, 21, 3),
     labels = c("0", "3%", "6%", "9%", "12%", "15%", "18%", "21%"),
-    name = NULL
-  ) +
+    name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
   labs(title = "Countries/organizations frequency contributions",
@@ -345,29 +347,27 @@ p1 <-
     axis.ticks.y = element_blank())
 p1
 
-# Distribution donors total contributions per country
-(donors_contrib_per_country <- df %>% 
+# Distribution donors total contributions per recipient
+donors_contrib_per_recipient <- df %>% 
   group_by(recipient) %>% 
   summarize(
-    count = n()
-  ) %>%
+    count = n()) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
          pct = round(freq * 100, 1)) %>%
-  select(recipient, count, pct))
+  select(recipient, count, pct)
 
+# Bar plot
 p2 <-
   ggplot(donors_contrib_per_country, aes(x = fct_reorder(recipient, desc(pct)), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
   scale_y_continuous(
     expand = c(0, 0),
-    # breaks = seq(0, 21, 3),
     labels = c("0%", "20%", "40%", "60%"),
-    name = NULL
-  ) +
+    name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, .5, .5, 2)) +
-  labs(title = "Total donor´s contributions per Country",
+  labs(title = "Total donor´s contributions per recipient",
        subtitle = paste("Viet Nam:", donors_contrib_per_country$pct[1],"; Bangladesh:", donors_contrib_per_country$pct[2])) +
   theme_dviz_hgrid(rel_small = 1) +
   theme(
@@ -375,6 +375,97 @@ p2 <-
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank())
 p2
+
+# Distribution donors total contributions per donor and recipient
+donors_contrib_per_donor_recipient <- df %>% 
+  group_by(donor, recipient) %>% 
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(count)) %>%
+  mutate(freq = count / sum(count),
+         pct = round(freq * 100, 1)) %>%
+  select(donor, recipient, count)
+
+# Density plot one distribution
+p3 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient)) + 
+  geom_density_line(alpha = 0.7, kernel = "gaussian") +
+  scale_y_continuous(name = "Density", expand = c(0, 0)) +
+  scale_x_continuous(name = "Count", expand = c(0, 0)) +
+  scale_fill_manual(
+    values = c("#22577a", "#f2ac18"),
+    name = NULL,
+    guide = guide_legend(direction = "horizontal")) +
+  labs(title = "Total donor´s contributions density per recipient") +
+  theme_dviz_hgrid() +
+  theme(
+    axis.line.x = element_blank(),
+    plot.margin = margin(3, 7, 3, 1.5),
+    strip.text = element_text(size = 14, margin = margin(0, 0, 0.2, 0, "cm")),
+    legend.position = "top",
+    legend.justification = "right",
+    legend.margin = margin(4.5, 0, 1.5, 0, "pt"),
+    legend.spacing.x = grid::unit(4.5, "pt"),
+    legend.spacing.y = grid::unit(0, "pt"),
+    legend.box.spacing = grid::unit(0, "cm"))
+p3
+
+# Density plot multiple distributions
+p4 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient)) + 
+  geom_density_line(alpha = 0.7, kernel = "gaussian") +
+  scale_y_continuous(name = "Density", expand = c(0, 0)) +
+  scale_x_continuous(name = "Count", expand = c(0, 0)) +
+  scale_fill_manual(
+    values = c("#22577a", "#f2ac18"),
+    name = NULL,
+    guide = NULL) +
+  labs(title = "Total donor´s contributions density per recipient") +
+  facet_wrap(~recipient) +
+  theme_dviz_hgrid() +
+  theme(
+    axis.line.x = element_blank(),
+    plot.margin = margin(3, 7, 3, 1.5),
+    strip.text = element_text(size = 14, margin = margin(0, 0, 0.2, 0, "cm")))
+p4
+
+# Distributions donor´s contribution per year and recipient
+donors_contrib_timeline_recipient <- df %>%
+  group_by(year, recipient) %>%
+  summarize(
+    count = n()
+  ) %>%
+  arrange(year) %>%
+  select(year, count, recipient)
+
+# Transform variable year as date
+donors_contrib_timeline_recipient$year <- donors_contrib_timeline_recipient$year %>% 
+  make_date()
+
+# Timeline
+p5 <- ggplot(donors_contrib_timeline_recipient, aes(x = year, y = count, color = recipient)) + 
+  geom_line(size = 1) +
+  scale_y_continuous(
+    expand = c(0, 0),
+    name = "Count") +
+  scale_x_date(
+    name = "Year",
+    date_breaks = "2 years",
+    date_labels = "%Y") +
+  scale_color_manual(
+    values = c("#22577a", "#f2ac18"),
+    name = NULL) +
+  labs(
+    title = "Donor´s contributions timeline per recipient") +
+  theme_dviz_open() +
+  theme(
+    plot.margin = margin(7, 7, 3, 1.5)
+    )
+p5
+
+```
+
+
+```{r}
 
 
 
