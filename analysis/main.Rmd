@@ -323,7 +323,7 @@ We´re going to explore and gain insights from our data using one of the most ou
 
 ```{r donors distribution}
 
-# Distribution donors contributions
+# Distribution donors total contributions
 p1 <-
   ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
@@ -344,6 +344,39 @@ p1 <-
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank())
 p1
+
+# Distribution donors total contributions per country
+(donors_contrib_per_country <- df %>% 
+  group_by(recipient) %>% 
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(count)) %>%
+  mutate(freq = count / sum(count),
+         pct = round(freq * 100, 1)) %>%
+  select(recipient, count, pct))
+
+p2 <-
+  ggplot(donors_contrib_per_country, aes(x = fct_reorder(recipient, desc(pct)), y = pct)) +
+  geom_col(fill = "#22577a", alpha = 0.9) +
+  scale_y_continuous(
+    expand = c(0, 0),
+    # breaks = seq(0, 21, 3),
+    labels = c("0%", "20%", "40%", "60%"),
+    name = NULL
+  ) +
+  scale_x_discrete(name = NULL,
+                   expand = c(0, .5, .5, 2)) +
+  labs(title = "Total donor´s contributions per Country",
+       subtitle = paste("Viet Nam:", donors_contrib_per_country$pct[1],"; Bangladesh:", donors_contrib_per_country$pct[2])) +
+  theme_dviz_hgrid(rel_small = 1) +
+  theme(
+    axis.ticks.length = grid::unit(0, "pt"),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank())
+p2
+
+
 
 ```
 
