@@ -327,18 +327,17 @@ We´re going to explore and gain insights from our data using one of the most ou
 
 # Distribution donors total contributions
 # Bar plot
-p1 <-
-  ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
+p1 <-ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
   scale_y_continuous(
-    expand = c(0, 0),
+    expand = c(0, 0.7),
     breaks = seq(0, 21, 3),
     labels = c("0", "3%", "6%", "9%", "12%", "15%", "18%", "21%"),
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
-  labs(title = "Countries/organizations frequency contributions",
-       subtitle = "Total WASH contributions for Viet Nam and Bangladesh") +
+  labs(title = "Frequency contributions (from total)",
+       subtitle = "WASH contributions for Viet Nam and Bangladesh") +
   coord_flip(clip = "off") +
   theme_dviz_vgrid(rel_small = .7) +
   theme(
@@ -457,16 +456,36 @@ p5 <- ggplot(donors_contrib_timeline_recipient, aes(x = year, y = count, color =
     title = "Donor´s contributions timeline per recipient") +
   theme_dviz_open() +
   theme(
-    plot.margin = margin(7, 7, 3, 1.5)
-    )
+    plot.margin = margin(7, 7, 3, 1.5),
+    legend.position = "top")
 p5
 
 ```
 
+### Amount Distribution
 
-```{r}
+```{r amount distribution}
 
-
+# Distribution donors total amount
+# Bar plot
+p1 <- ggplot(donors_ranking_amount, aes(x = fct_reorder(donor, pct), y = pct)) +
+  geom_col(fill = "#22577a", alpha = 0.9) +
+  scale_y_continuous(
+    expand = c(0, 0.7),
+    breaks = seq(0, 30, 2),
+    labels = c("0", "2%", "4%", "6%", "8%", "10%", "12%", "14%", "16%", "18%", "20%", "22%", "24%", "26%", "28%", "30%"),
+    name = NULL) +
+  scale_x_discrete(name = NULL,
+                   expand = c(0, 0.5)) +
+  labs(title = "Amount contributions (from total)",
+       subtitle = "WASH amount contributions for Viet Nam and Bangladesh") +
+  coord_flip(clip = "off") +
+  theme_dviz_vgrid(rel_small = .7) +
+  theme(
+    axis.ticks.length = grid::unit(0, "pt"),
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank())
+p1
 
 ```
 
