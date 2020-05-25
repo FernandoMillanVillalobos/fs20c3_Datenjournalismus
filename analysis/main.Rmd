@@ -477,7 +477,7 @@ p1 <- ggplot(donors_ranking_amount, aes(x = fct_reorder(donor, pct), y = pct)) +
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
-  labs(title = "Amount contributions (from total)",
+  labs(title = "Contributions amount (from total)",
        subtitle = "WASH amount contributions for Viet Nam and Bangladesh") +
   coord_flip(clip = "off") +
   theme_dviz_vgrid(rel_small = .7) +
