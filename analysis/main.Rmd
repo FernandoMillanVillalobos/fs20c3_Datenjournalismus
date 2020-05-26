@@ -327,7 +327,8 @@ We´re going to explore and gain insights from our data using one of the most ou
 
 # Distribution donors total contributions
 # Bar plot
-p1 <-ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
+# p1 <-ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
+p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder(donor, pct), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
   scale_y_continuous(
     expand = c(0, 0.7),
@@ -336,8 +337,8 @@ p1 <-ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
-  labs(title = "Contributions frequency (from total)",
-       subtitle = "WASH contributions for Viet Nam and Bangladesh") +
+  labs(title = "Contributions frequency (>0.4% = more than once)",
+       subtitle = "Main WASH contributions for Viet Nam and Bangladesh") +
   coord_flip(clip = "off") +
   theme_dviz_vgrid(rel_small = .7) +
   theme(
@@ -468,7 +469,7 @@ p5
 
 # Distribution donors total amount
 # Bar plot
-p1 <- ggplot(donors_ranking_amount, aes(x = fct_reorder(donor, pct), y = pct)) +
+p1 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes(x = fct_reorder(donor, pct), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
   scale_y_continuous(
     expand = c(0, 0.7),
@@ -477,8 +478,8 @@ p1 <- ggplot(donors_ranking_amount, aes(x = fct_reorder(donor, pct), y = pct)) +
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
-  labs(title = "Contributions amount (from total)",
-       subtitle = "WASH amount contributions for Viet Nam and Bangladesh") +
+  labs(title = "Contributions amount (>0.1%)",
+       subtitle = "Main WASH amount contributions for Viet Nam and Bangladesh") +
   coord_flip(clip = "off") +
   theme_dviz_vgrid(rel_small = .7) +
   theme(
