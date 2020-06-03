@@ -344,7 +344,8 @@ p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder
   theme(
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
-    axis.ticks.y = element_blank())
+    axis.ticks.y = element_blank(),
+    plot.margin = margin(3, 10, 3, 3))
 p1
 
 # Distribution donors total contributions per recipient
@@ -453,7 +454,7 @@ p5 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient
   facet_wrap(~recipient) +
   theme(
     axis.line.x = element_blank(),
-    plot.margin = margin(3, 7, 3, 3))
+    plot.margin = margin(3, 15, 3, 3))
 p5
 
 # Distributions donor´s contribution per year and recipient
@@ -525,7 +526,8 @@ p7 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes
   theme(
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
-    axis.ticks.y = element_blank())
+    axis.ticks.y = element_blank(),
+    plot.margin = margin(c(7, 15, 3, 2)))
 p7
 
 # Distribution of amount per donor and recipient
@@ -540,6 +542,8 @@ donors_ranking_amount_per_recipient <- df %>%
   arrange(recipient, pct) %>%
   mutate(order = row_number()) %>% 
   select(donor, pct, recipient, order)
+
+par(mar = c(6, 6, 6, 6))
 
 # Bar plot
 p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_per_recipient$pct != 100), aes(x = order, y = pct, fill = recipient)) +
@@ -568,7 +572,7 @@ p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
     axis.ticks.y = element_blank(),
     legend.position = "none",
     panel.spacing.x = unit(1, "lines"),
-    plot.margin = margin(3, 7, 3, 3)) #bottom, left, top and right
+    plot.margin = margin(3, 25, 3, 3)) #top, right, bottom and left
 p8
 
 ```
