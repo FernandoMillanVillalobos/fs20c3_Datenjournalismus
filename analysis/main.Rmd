@@ -505,7 +505,7 @@ p6
 
 ### Amount Distribution
 
-```{r amount distribution}
+```{r donors amount distribution}
 
 # Distribution donors total amount
 # Bar plot
@@ -575,10 +575,6 @@ p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
     plot.margin = margin(3, 25, 3, 3))
 p8
 
-```
-
-```{r donors amount distribution}
-
 # Donors amount ranking distribution per year
 donors_ranking_amount_timeline <- df %>%
   group_by(year, recipient) %>%
@@ -630,6 +626,45 @@ p9 <- ggplot(donors_ranking_amount_timeline, aes(x = year, y = total_amount, col
     plot.margin = margin(7, 7, 3, 2),
     legend.position = "top")
 p9
+
+# Donors amount ranking distribution per year
+donors_ranking_amount_timeline_summary <- df %>%
+  group_by(year, recipient) %>%
+  summarize(
+    total_amount = sum(amount),
+    mean = mean(amount),
+    median = median(amount),
+    max = max(amount),
+    min = min(amount)
+  ) %>%
+  arrange(year) %>%
+  mutate(freq = total_amount / sum(total_amount),
+         pct = round(freq * 100, 4)) %>%
+  select(year, total_amount, mean, median, recipient)
+
+# Transform variable year as date
+donors_ranking_amount_timeline_summary$year <- donors_ranking_amount_timeline_summary$year %>%
+  make_date()
+
+# Box plot
+p10 <- ggplot(donors_ranking_amount_timeline_summary, aes(x = year, y = mean, group = year)) +
+  geom_boxplot(fill = "#94a7bb", na.rm = TRUE) + 
+  scale_y_log10(
+  breaks = trans_breaks("log10", function(x) 10^x),
+  labels = trans_format("log10", math_format(10^.x)),
+  expand = c(0, 0),
+  name = "Mean (USD)") + 
+  scale_x_date(
+  expand = c(0, 0),
+  limits = as.Date(c("1991-01-01", "2014-01-01")),
+  name = "Year",
+  date_breaks = "2 years",
+  date_labels = "%Y") +
+  theme_dviz_open() +
+    labs(
+  title = "Mean donors´ amount contributions timeline") +
+  theme(plot.margin = margin(3, 7, 3, 1.5))
+p10
 
 ```
 
