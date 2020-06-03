@@ -141,7 +141,7 @@ if (!require(checkpoint)) {
     require(devtools)
   }
   devtools::install_github("RevolutionAnalytics/checkpoint",
-                           ref = "v0.3.2", # could be adapted later,
+                           ref = "v0.4.9", # could be adapted later,
                            # as of now (beginning of July 2017
                            # this is the current release on CRAN)
                            repos = "http://cran.us.r-project.org")
@@ -193,7 +193,7 @@ This notebook is thought as a working document for the development and documenta
 
 [AidData](https://www.aiddata.org/) is a research lab at William & Mary's Global Research Institute. AidData’s interdisciplinary team focus on research and analysis of development investments from more than 90 grants and contracts worth more than $50 million over the last 16 years. Taking as starting point the [data](https://www.aiddata.org/data/aiddata-core-research-release-level-1-3-1) provided by them and after a previous research about media use of the information gathered and made available to the public by this organization, we´ve developed a new data-driven story. In order to do that, data from the core dataset were selected, extracted and analysed to built our written and visual narrative.
 
-The data-driven story we want to tell with the help of the data provided by AidData, is about the succesfull and quick development of a national water supply and sanitation net that Vietnam has accomplished in the past two decades. This huge progress has been possible thanks, among other reasons, to a broad international cooperation. In this notebook we´ve digged into the available data to bring into the light the main protagonists of this collaborative achievement and try to picture the timeline that makes it a today reality.
+The data-driven story we want to tell with the help of the data provided by AidData, is about the successfull and quick development of a national water supply and sanitation net that Vietnam has accomplished in the past two decades. This huge progress has been possible thanks, among other reasons, to a broad international cooperation. In this notebook we´ve dug into the available data to bring into the light the main protagonists of this collaborative achievement and try to picture the time line that makes it a today reality.
 
 With this in mind, we´ve looked for the 3-digit sector classification based on OECD purpose codes that comes in [the documentation of the data](http://docs.aiddata.org/ad4/files/aiddata_coding_scheme_0.pdf) and selected the activities that are related to our main goal.
 
@@ -237,6 +237,7 @@ years <- 1992:2013
 df$donor <- df$donor %>% 
   as_factor() %>% # convert variable donor as factor
   recode_factor(
+    "United Kingdom" = "UK",
     "Asian Development Bank (ASDB)" = "ASDB",
     "Asian Development Fund (ASDF)" = "ASDF",
     "Asian Development Bank (AsDB Special Funds)" = "AsDB",
@@ -323,27 +324,51 @@ We´re going to explore and gain insights from our data using one of the most ou
 
 ### Donors Distribution
 
-```{r donors distribution}
+```{r test}
 
 # Distribution donors total contributions
-# (donors_contrib_viz <- df %>% 
+# (donors_contrib <- df %>% 
 #   group_by(donor) %>% 
 #   summarize(
 #     count = n()
 #   ) %>%
 #   arrange(desc(count)) %>%
 #   mutate(freq = count / sum(count),
-#         pct = round(freq * 100, 1),
-#         pct_white = case_when(
-#         pct > 1 ~ pct,     # keep the labels for points you want to highlight
-#         # you can add more criteria here!
-#         TRUE ~ "")       # ditch the rest
-#          ) %>%
+#          pct = round(freq * 100, 1)) %>%
 #   select(donor, count, pct))
+# 
+# (donors_contrib_highlight <- donors_contrib %>%
+#     mutate(tohighlight = ifelse(pct %in% c(0.7, 0.5), "yes", "no")))
+# 
+# # Bar plot
+# p1 <-ggplot(subset(donors_contrib_highlight, donors_contrib_highlight$pct > .4), aes(x = fct_reorder(donor, pct), y = pct)) +
+#   # geom_col(aes(group = tohighlight), fill = "#22577a", alpha = 0.9) +
+#   geom_col(fill = "#22577a", alpha = 0.9) +
+#   scale_y_continuous(
+#     expand = c(0, 0.7),
+#     breaks = seq(0, 21, 3),
+#     labels = c("0", "3%", "6%", "9%", "12%", "15%", "18%", "21%"),
+#     name = NULL) +
+#   scale_x_discrete(name = NULL,
+#                    expand = c(0, 0.5)) +
+#   geom_text(data = donors_contrib_highlight[donors_contrib_highlight$pct == c(1)], aes(label = pct), hjust = 1.2, vjust = .3, colour = "white", size = 3) +
+#   labs(title = "Contributions frequency (>0.4% = more than once)",
+#        subtitle = "Main WASH contributions for Viet Nam and Bangladesh") +
+#   coord_flip(clip = "off") +
+#   theme_dviz_vgrid(rel_small = .7) +
+#   theme(
+#     axis.ticks.length = grid::unit(0, "pt"),
+#     axis.line.y = element_blank(),
+#     axis.ticks.y = element_blank())
+# p1
+
+```
+
+
+```{r donors distribution}
 
 # Bar plot
-# p1 <-ggplot(donors_contrib, aes(x = fct_reorder(donor, pct), y = pct)) +
-p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder(donor, pct), y = pct)) +
+p1 <-ggplot(subset(donors_contrib_highlight, donors_contrib_highlight$pct > .4), aes(x = fct_reorder(donor, pct), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
   scale_y_continuous(
     expand = c(0, 0.7),
@@ -368,9 +393,9 @@ donors_contrib_per_recipient <- df %>%
   group_by(recipient) %>% 
   summarize(
     count = n()) %>%
-  arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
          pct = round(freq * 100, 1)) %>%
+  arrange(desc(pct)) %>%
   select(recipient, count, pct)
 
 # Bar plot
@@ -478,12 +503,6 @@ p5 <- ggplot(donors_contrib_timeline_recipient, aes(x = year, y = count, color =
     legend.position = "top")
 p5
 
-
-# %+replace%
-#     theme(
-#       plot.margin = margin(half_line/2, 1.5, half_line/2, 1.5),
-#       complete = TRUE
-
 ```
 
 ### Amount Distribution
@@ -492,7 +511,7 @@ p5
 
 # Distribution donors total amount
 # Bar plot
-p1 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes(x = fct_reorder(donor, pct), y = pct)) +
+p6 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes(x = fct_reorder(donor, pct), y = pct)) +
   geom_col(fill = "#22577a", alpha = 0.9) +
   scale_y_continuous(
     expand = c(0, 0.7),
@@ -510,7 +529,7 @@ p1 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank())
-p1
+p6
 
 # Distribution of amount per donor and recipient
 donors_ranking_amount_per_recipient <- df %>%
@@ -520,51 +539,15 @@ donors_ranking_amount_per_recipient <- df %>%
   ) %>%
   mutate(freq = total_amount / sum(total_amount),
          pct = round(freq * 100, 2)) %>%
-  arrange(pct) %>%
+  arrange(desc(pct)) %>%
   select(donor, pct, recipient)
-# 
-# # Distribution of amount per recipient total
-# (donors_ranking_amount_per_recipient_total <- donors_ranking_amount_per_recipient %>%
-#   filter(pct == 100.00)) %>% 
-#   summarize(
-#     count = n()
-#   ) %>% 
-#   mutate(freq = count / sum(count),
-#          pct = round(freq * 100, 1)) 
-
-
-# donors_contrib_per_donor_recipient <- df %>% 
-#   group_by(donor, recipient) %>% 
-#   summarize(
-#     count = n()
-#   ) %>%
-#   arrange(desc(count)) %>%
-#   mutate(freq = count / sum(count),
-#          pct = round(freq * 100, 1)) %>%
-#   select(donor, recipient, count)
 
 # Bar plot
-# p2 <- ggplot(bundestag, aes(x = factor(party, levels = bundestag$party), y = seats, fill = party)) + 
-#   geom_col() + 
-#   geom_text(aes(label = seats), size = main_size, vjust = 2, color = c("white", "white", "black")) +
-#   scale_x_discrete(name = NULL) +
-#   scale_y_continuous(expand = c(0, 0)) +
-#   scale_fill_manual(values = bundestag$colors[order(bundestag$party)], guide = "none") + 
-#   #geom_hline(yintercept = c(50, 100, 150, 200), color = "#ffffff70", size = .5) +
-#   coord_cartesian(clip = "off") +
-#   theme_dviz_hgrid() +
-#   theme(
-#     axis.line.x = element_blank(),
-#     axis.ticks.x = element_blank()
-#   )
-# p2
-
-# Bar plot
-p3 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_per_recipient$pct != 100), aes(x = fct_reorder(donor, pct), y = pct, fill = recipient)) +
+p7 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_per_recipient$pct != 100), aes(x = donor, y = pct, fill = recipient)) +
   geom_col(position = "dodge", alpha = 0.9) +
   facet_wrap(~recipient) +
   scale_y_continuous(
-    expand = c(0, .5),
+    expand = c(0, 0),
     limits = c(0, 100),
     breaks = c(0, 25, 50, 75, 100),
     labels = c("0", "25%", "50%", "75%", "100%"),
@@ -573,7 +556,7 @@ p3 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
                    expand = c(0, 0)) +
   scale_fill_manual(values = c("#22577a", "#f2ac18"),
     name = NULL) +
-  geom_text(aes(label = round(pct, 2)), hjust = 1.2, vjust = .3, colour = "white", size = 3) +
+  # geom_text(aes(label = round(pct, 2)), hjust = 1.2, vjust = .3, colour = "white", size = 3) +
   labs(title = "Contributions amount per recipient (both recipients)",
        subtitle = "Donors have contributed at least with some amount for both countries.") +
   coord_flip(clip = "off") +
@@ -582,10 +565,67 @@ p3 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
-    legend.position = "none")
-p3
+    legend.position = "none",
+    panel.spacing.x=unit(1.5, "lines"),
+    plot.margin = margin(3, 7, 3, 1.5)) #bottom, left, top and right
+p7
 
 ```
+
+```{r donors amount distribution}
+
+# Donors amount ranking distribution per year
+(donors_ranking_amount_timeline <- df %>%
+  group_by(year, donor) %>%
+  summarize(
+    total_amount = sum(amount),
+    mean = mean(amount),
+    median = median(amount),
+    max = max(amount),
+    min = min(amount)
+  ) %>%
+  arrange(year) %>%
+  mutate(freq = total_amount / sum(total_amount),
+         pct = round(freq * 100, 4)) %>%
+  select(year, donor, total_amount, mean, median))
+
+# Transform variable year as date
+donors_ranking_amount_timeline$year <- donors_ranking_amount_timeline$year %>%
+  make_date()
+
+# donors_ranking_amount_timeline <- donors_ranking_amount_timeline %>% 
+#   complete(year = seq.Date(min(year), max(year), by = "year"), donor) %>% 
+#   group_by(donor) %>% 
+#   fill("total_amount")
+
+
+# Timeline
+p8 <- ggplot(donors_ranking_amount_timeline, aes(x = year, y = total_amount, group = donor)) +
+  geom_line(na.rm = TRUE) +
+  scale_y_log10(
+    breaks = trans_breaks("log10", function(x) 10^x),
+    labels = trans_format("log10", math_format(10^.x)),
+    expand = c(0, 0),
+    name = "Amount") +
+  scale_x_date(
+    expand = c(0, 0),
+    name = "Year",
+    date_breaks = "2 years",
+    date_labels = "%Y") +
+  # scale_color_manual(
+  #   values = c("#22577a", "#f2ac18"),
+  #   name = NULL) +
+  labs(
+    title = "Donors´ contributions timeline per recipient") +
+  theme_dviz_open() +
+  theme(
+    plot.margin = margin(7, 7, 3, 2), #bottom, left, top and right
+    legend.position = "top")
+p8
+
+```
+
+
 
 ## Linting
 
