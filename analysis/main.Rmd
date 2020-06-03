@@ -668,6 +668,66 @@ p10
 
 ```
 
+### Activities Distribution
+
+```{r activities distribution}
+
+# Times and frequency activities
+(activities_distrib <- df %>% 
+  group_by(code, recipient) %>% 
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(code)) %>%
+  mutate(freq = count / sum(count),
+         pct = round(freq * 100, 1)) %>%
+  select(code, recipient, count, pct))
+
+# Rename code activities for presentation
+activities_distrib$code <- activities_distrib$code %>%
+  recode_factor(
+    "14000" = "Water Supply (combi)",
+    "14005" = "Water Supply (undef)",
+    "14030" = "Basic Drinking Water",
+    "14050" = "Waste/Disposal",
+    "14081" = "Education"
+  )
+
+# Stacked bar plot
+p11 <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient)) +
+  geom_col(position = "stack", color = "white", size = 1, width = 1) +
+  geom_text(
+    aes(y = pct, label = pct), 
+    color = "white",
+    size = 12/.pt,
+    family = dviz_font_family,
+    vjust = -3
+  ) +
+  scale_x_discrete(expand = c(0, 0), name = NULL) +
+  scale_y_continuous(expand = c(0, 0), breaks = NULL, name = NULL) +
+  scale_fill_manual(
+    values = c("#f2ac18", "#22577a"),
+    breaks = c("Viet Nam", "Bangladesh"),
+    labels = c("Viet Nam", "Bangladesh"),
+    name = NULL
+  ) +
+  coord_cartesian(clip = "off") +
+  theme_dviz_grid() +
+  theme(
+    panel.grid.major = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom",
+    legend.justification = "center",
+    legend.background = element_rect(fill = "white"),
+    legend.spacing.x = grid::unit(4.5, "pt"),
+    legend.spacing.y = grid::unit(0, "cm"),
+    legend.box.spacing = grid::unit(7, "pt")
+  )
+p11
+
+```
+
 ## Linting
 
 The code in this RMarkdown is linted with the [lintr package](https://github.com/jimhester/lintr), which is based on the  [tidyverse style guide](http://style.tidyverse.org/). 
