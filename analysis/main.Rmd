@@ -336,7 +336,7 @@ p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
-  geom_text(aes(label = pct), hjust = 1.2, vjust = .3, colour = "white", size = 3) +
+  geom_text(aes(label = pct), hjust = -.2, vjust = .3, colour = "black", size = 3) +
   labs(title = "Contributions frequency (>0.4% = more than once)",
        subtitle = "Main WASH contributions for Viet Nam and Bangladesh") +
   coord_flip(clip = "off") +
@@ -515,7 +515,7 @@ p7 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes
     breaks = seq(0, 30, 2),
     labels = c("0", "2%", "4%", "6%", "8%", "10%", "12%", "14%", "16%", "18%", "20%", "22%", "24%", "26%", "28%", "30%"),
     name = NULL) +
-  geom_text(aes(label = round(pct, 2)), hjust = 1.2, vjust = .3, colour = "white", size = 3) +
+  geom_text(aes(label = round(pct, 2)), hjust = -.2, vjust = .3, colour = "black", size = 3) +
   scale_x_discrete(name = NULL,
                    expand = c(0, 0.5)) +
   labs(title = "Contributions amount (>0.1%)",
@@ -557,7 +557,7 @@ p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
                    labels = donors_ranking_amount_per_recipient$donor) +
   scale_fill_manual(values = c("#22577a", "#f2ac18"),
     name = NULL) +
-  # geom_text(aes(label = round(pct, 2)), hjust = 1.2, vjust = .3, colour = "white", size = 3) +
+  geom_text(aes(label = round(pct, 2)), hjust = -.2, vjust = .3, colour = "black", size = 3) +
   labs(title = "Contributions amount per recipient (both recipients)",
        subtitle = "Donors have contributed at least with some amount for both countries.") +
   coord_flip(clip = "off") +
@@ -572,14 +572,6 @@ p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
 p8
 
 ```
-
-```{r test}
-
-
-
-```
-
-
 
 ```{r donors amount distribution}
 
