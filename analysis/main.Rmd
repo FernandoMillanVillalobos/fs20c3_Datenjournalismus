@@ -345,7 +345,7 @@ p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
-    plot.margin = margin(3, 10, 3, 3))
+    plot.margin = margin(3, 10, 3, 3)) #top, right, bottom and left
 p1
 
 # Distribution donors total contributions per recipient
@@ -471,7 +471,7 @@ donors_contrib_timeline_recipient$year <- donors_contrib_timeline_recipient$year
   make_date()
 
 # Get a vector of the last values
-donors_contrib_timeline_recipient_ends <- donors_contrib_timeline_recipient_test %>% 
+donors_contrib_timeline_recipient_ends <- donors_contrib_timeline_recipient %>% 
   group_by(recipient) %>% 
   top_n(1, year) %>% 
   pull(count)
@@ -497,7 +497,7 @@ p6 <- ggplot(donors_contrib_timeline_recipient, aes(x = year, y = count, color =
   theme(
     axis.line.y.right = element_blank(),
     axis.ticks.y.right = element_blank(),
-    plot.margin = margin(7, 7, 3, 2), #bottom, left, top and right
+    plot.margin = margin(7, 7, 3, 2),
     legend.position = "top")
 p6
 
@@ -572,7 +572,7 @@ p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
     axis.ticks.y = element_blank(),
     legend.position = "none",
     panel.spacing.x = unit(1, "lines"),
-    plot.margin = margin(3, 25, 3, 3)) #top, right, bottom and left
+    plot.margin = margin(3, 25, 3, 3))
 p8
 
 ```
@@ -580,8 +580,8 @@ p8
 ```{r donors amount distribution}
 
 # Donors amount ranking distribution per year
-(donors_ranking_amount_timeline <- df %>%
-  group_by(year, donor) %>%
+donors_ranking_amount_timeline <- df %>%
+  group_by(year, recipient) %>%
   summarize(
     total_amount = sum(amount),
     mean = mean(amount),
@@ -592,45 +592,46 @@ p8
   arrange(year) %>%
   mutate(freq = total_amount / sum(total_amount),
          pct = round(freq * 100, 4)) %>%
-  select(year, donor, total_amount, mean, median))
+  select(year, total_amount, recipient)
 
 # Transform variable year as date
 donors_ranking_amount_timeline$year <- donors_ranking_amount_timeline$year %>%
   make_date()
 
-# donors_ranking_amount_timeline <- donors_ranking_amount_timeline %>% 
-#   complete(year = seq.Date(min(year), max(year), by = "year"), donor) %>% 
-#   group_by(donor) %>% 
-#   fill("total_amount")
-
+# Get a vector of the last values
+donors_ranking_amount_timeline_ends <- donors_ranking_amount_timeline %>% 
+  group_by(recipient) %>% 
+  top_n(1, year) %>% 
+  pull(total_amount)
 
 # Timeline
-p8 <- ggplot(donors_ranking_amount_timeline, aes(x = year, y = total_amount, group = donor)) +
-  geom_line(na.rm = TRUE) +
+p9 <- ggplot(donors_ranking_amount_timeline, aes(x = year, y = total_amount, color = recipient)) +
+  geom_line(size = 1, alpha = .8) +
   scale_y_log10(
     breaks = trans_breaks("log10", function(x) 10^x),
     labels = trans_format("log10", math_format(10^.x)),
     expand = c(0, 0),
-    name = "Amount") +
+    name = "Amount (USD)",
+    sec.axis = sec_axis(~ ., breaks = donors_ranking_amount_timeline_ends)) +
   scale_x_date(
     expand = c(0, 0),
     name = "Year",
     date_breaks = "2 years",
     date_labels = "%Y") +
-  # scale_color_manual(
-  #   values = c("#22577a", "#f2ac18"),
-  #   name = NULL) +
+  scale_color_manual(
+    values = c("#22577a", "#f2ac18"),
+    name = NULL) +
   labs(
-    title = "Donors´ contributions timeline per recipient") +
+    title = "Donors´ amount contribution timeline per recipient") +
   theme_dviz_open() +
   theme(
-    plot.margin = margin(7, 7, 3, 2), #bottom, left, top and right
+    axis.line.y.right = element_blank(),
+    axis.ticks.y.right = element_blank(),
+    plot.margin = margin(7, 7, 3, 2),
     legend.position = "top")
-p8
+p9
 
 ```
-
-
 
 ## Linting
 
