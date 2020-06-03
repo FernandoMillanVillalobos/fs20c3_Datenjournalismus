@@ -328,7 +328,7 @@ We´re going to explore and gain insights from our data using one of the most ou
 
 # Bar plot
 p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder(donor, pct), y = pct)) +
-  geom_col(fill = "#22577a", alpha = 0.9) +
+  geom_col(fill = "#22577a", alpha = .8) +
   scale_y_continuous(
     expand = c(0, 0.7),
     breaks = seq(0, 21, 3),
@@ -359,7 +359,7 @@ donors_contrib_per_recipient <- df %>%
 
 # Bar plot
 p2 <- ggplot(donors_contrib_per_recipient, aes(x = fct_reorder(recipient, desc(pct)), y = pct)) +
-  geom_col(fill = "#22577a", alpha = 0.9) +
+  geom_col(fill = "#22577a", alpha = .8) +
   scale_y_continuous(
     expand = c(0, 0),
     labels = c("0%", "20%", "40%", "60%"),
@@ -388,7 +388,7 @@ donors_contrib_per_donor_recipient <- df %>%
 
 # Density plot one distribution
 p3 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient)) + 
-  geom_density_line(alpha = 0.7, kernel = "gaussian", color = "transparent") +
+  geom_density_line(alpha = .7, kernel = "gaussian", color = "transparent") +
   scale_y_continuous(name = "Density", expand = c(0, 0)) +
   scale_x_continuous(name = "Count", expand = c(0, 0)) +
   scale_fill_manual(
@@ -411,7 +411,7 @@ p3
 
 # Density plot multiple distributions
 p4 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient)) + 
-  geom_density_line(alpha = 0.7, kernel = "gaussian", color = "transparent") +
+  geom_density_line(alpha = .7, kernel = "gaussian", color = "transparent") +
   scale_y_continuous(name = "Density", expand = c(0, 0)) +
   scale_x_continuous(name = "Count", expand = c(0, 0)) +
   scale_fill_manual(
@@ -477,7 +477,7 @@ donors_contrib_timeline_recipient_ends <- donors_contrib_timeline_recipient_test
 
 # Timeline
 p6 <- ggplot(donors_contrib_timeline_recipient, aes(x = year, y = count, color = recipient)) + 
-  geom_line(size = 1, alpha = .7) +
+  geom_line(size = 1, alpha = .8) +
   scale_y_continuous(
     expand = c(0, 0),
     name = "Count",
@@ -508,8 +508,8 @@ p6
 
 # Distribution donors total amount
 # Bar plot
-p6 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes(x = fct_reorder(donor, pct), y = pct)) +
-  geom_col(fill = "#22577a", alpha = 0.9) +
+p7 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes(x = fct_reorder(donor, pct), y = pct)) +
+  geom_col(fill = "#22577a", alpha = .8) +
   scale_y_continuous(
     expand = c(0, 0.7),
     breaks = seq(0, 30, 2),
@@ -526,7 +526,7 @@ p6 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank())
-p6
+p7
 
 # Distribution of amount per donor and recipient
 donors_ranking_amount_per_recipient <- df %>%
@@ -536,21 +536,25 @@ donors_ranking_amount_per_recipient <- df %>%
   ) %>%
   mutate(freq = total_amount / sum(total_amount),
          pct = round(freq * 100, 2)) %>%
-  arrange(desc(pct)) %>%
-  select(donor, pct, recipient)
+  ungroup() %>% 
+  arrange(recipient, pct) %>%
+  mutate(order = row_number()) %>% 
+  select(donor, pct, recipient, order)
 
 # Bar plot
-p7 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_per_recipient$pct != 100), aes(x = donor, y = pct, fill = recipient)) +
-  geom_col(position = "dodge", alpha = 0.9) +
-  facet_wrap(~recipient) +
+p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_per_recipient$pct != 100), aes(x = order, y = pct, fill = recipient)) +
+  geom_col(position = "dodge", alpha = .8) +
+  facet_wrap(~recipient, scales = "free") +
   scale_y_continuous(
     expand = c(0, 0),
     limits = c(0, 100),
     breaks = c(0, 25, 50, 75, 100),
     labels = c("0", "25%", "50%", "75%", "100%"),
     name = NULL) +
-  scale_x_discrete(name = NULL,
-                   expand = c(0, 0)) +
+  scale_x_continuous(name = NULL,
+                   expand = c(0, 0),
+                   breaks = donors_ranking_amount_per_recipient$order,
+                   labels = donors_ranking_amount_per_recipient$donor) +
   scale_fill_manual(values = c("#22577a", "#f2ac18"),
     name = NULL) +
   # geom_text(aes(label = round(pct, 2)), hjust = 1.2, vjust = .3, colour = "white", size = 3) +
@@ -563,11 +567,19 @@ p7 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
     legend.position = "none",
-    panel.spacing.x=unit(1.5, "lines"),
-    plot.margin = margin(3, 7, 3, 1.5)) #bottom, left, top and right
-p7
+    panel.spacing.x = unit(1, "lines"),
+    plot.margin = margin(3, 7, 3, 3)) #bottom, left, top and right
+p8
 
 ```
+
+```{r test}
+
+
+
+```
+
+
 
 ```{r donors amount distribution}
 
