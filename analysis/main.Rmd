@@ -200,7 +200,7 @@ With this in mind, we´ve looked for the 3-digit sector classification based on 
 # Data Importing
 The core dataset provided by AidData can be found [here](https://www.aiddata.org/data/aiddata-core-research-release-level-1-3-1). This dataset tracks known international development flows from bilateral and multilateral aid organizations from 1947 to 2013 in a flat-table structure. Information available are served as a granular data from more level of details to a general overview. After getting a first impression of the different datasets that encompass the whole data core and reading the [documentation](https://www.aiddata.org/methods/sdg-coding), we end that the information we need for our story is located in the "thin" version (more than 1.500.000 entries).
 
-```{r importing data}
+```{r importing data, warning=FALSE}
 
 # Importing whole dataset
 df_full <- read_csv("input/AidDataCoreThin_ResearchRelease_Level1_v3.1.csv")
@@ -211,7 +211,7 @@ head(df_full)
 # Data Pre-Processing
 In this step we are going to transform our imported data in a way that allows us to apply further analysis. Typically, this process requires some data wrangling, data transformation and the creation of new variables.
 
-```{r selecting filtering renaming}
+```{r selecting filtering renaming, warning=FALSE}
 
 # The 3-digit sector classification based on OECD purpose codes tells us that
 # codes beginning with 140 corresponds to “Water Supply and Sanitation”.
@@ -289,7 +289,7 @@ Now we want to describe some important properties of the distribution of the val
 
 From our primary data exploration we can see that there´re a total of __`r distinct_donors`__. Donors that have contributed more frequently are UNICEF (__`r donors_contrib$pct[1]`%__) , Germany (__`r donors_contrib$pct[2]`%__) and Japan (__`r donors_contrib$pct[3]`%__). These three main donors represent together up to __`r donors_contrib$pct[1] + donors_contrib$pct[2] + donors_contrib$pct[3]`%__ from all contributions. On the other hand, donors like New Zealand (__`r donors_contrib$pct[31]`%__), United Arab Emirates (__`r donors_contrib$pct[30]`%__) and IFAD (__`r donors_contrib$pct[29]`%__) are located at the bottom of the distribution with an all together total percentage of less than __1%__.
 
-```{r data summarising amount}
+```{r data summarising amount, warning=FALSE}
 
 # Finding the most common values of our quantitative variable in our sample.
 select(df, amount) %>%
@@ -324,7 +324,7 @@ We´re going to explore and gain insights from our data using one of the most ou
 
 ### Donors Distribution
 
-```{r donors number distribution}
+```{r donors number distribution, warning=FALSE}
 
 # Bar plot
 p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder(donor, pct), y = pct)) +
@@ -338,7 +338,7 @@ p1 <-ggplot(subset(donors_contrib, donors_contrib$pct > .4), aes(x = fct_reorder
                    expand = c(0, 0.5)) +
   geom_text(aes(label = pct), hjust = -.2, vjust = .3, colour = "black", size = 3) +
   labs(title = "Contributions frequency (>0.4% = more than once)",
-       subtitle = "Main WASH contributions for Viet Nam and Bangladesh") +
+       subtitle = "Main WASH donors' contributions for Viet Nam and Bangladesh") +
   coord_flip(clip = "off") +
   theme_dviz_vgrid(rel_small = .7) +
   theme(
@@ -362,16 +362,17 @@ donors_contrib_per_recipient <- df %>%
 # Bar plot
 p2 <- ggplot(donors_contrib_per_recipient, aes(x = fct_reorder(recipient, desc(pct)), y = pct)) +
   geom_col(fill = "#22577a", alpha = .8) +
+  geom_text(aes(label = pct), vjust = 2, color = "white", size = 14/.pt, family = dviz_font_family) +
   scale_y_continuous(
     expand = c(0, 0),
     labels = c("0%", "20%", "40%", "60%"),
     name = NULL) +
   scale_x_discrete(name = NULL,
                    expand = c(0, .5, .5, 2)) +
-  labs(title = "Total donors´ contributions per recipient",
-       subtitle = paste("Viet Nam:", donors_contrib_per_recipient$pct[1],"; Bangladesh:", donors_contrib_per_recipient$pct[2])) +
+  labs(title = "Total contributions per recipient") +
   theme_dviz_hgrid(rel_small = 1) +
   theme(
+    axis.line.x.bottom = element_line(size = .5, color = "black"),
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank())
@@ -397,7 +398,7 @@ p3 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient
     values = c("#22577a", "#f2ac18"),
     name = NULL,
     guide = guide_legend(direction = "horizontal")) +
-  labs(title = "Donors´ contributions timeline per recipient") +
+  labs(title = "Contributions density per recipient") +
   theme_dviz_hgrid() +
   theme(
     axis.line.x = element_blank(),
@@ -420,7 +421,7 @@ p4 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient
     values = c("#22577a", "#f2ac18"),
     name = NULL,
     guide = NULL) +
-  labs(title = "Donors´ contributions density per recipient") +
+  labs(title = "Contributions density per recipient") +
   facet_wrap(~recipient) +
   theme_dviz_hgrid() +
   theme(
@@ -450,7 +451,7 @@ p5 <- ggplot(donors_contrib_per_donor_recipient, aes(x = count, fill = recipient
     values = c("#22577a", "#f2ac18"),
     name = NULL,
     guide = NULL) +
-  labs(title = "Donors´ contributions density per recipient (vs total)") +
+  labs(title = "Contributions density per recipient (vs total)") +
   theme_dviz_hgrid() +
   facet_wrap(~recipient) +
   theme(
@@ -493,7 +494,7 @@ p6 <- ggplot(donors_contrib_timeline_recipient, aes(x = year, y = count, color =
     values = c("#22577a", "#f2ac18"),
     name = NULL) +
   labs(
-    title = "Donors´ contributions timeline per recipient") +
+    title = "Contributions timeline per recipient") +
   theme_dviz_open() +
   theme(
     axis.line.y.right = element_blank(),
@@ -506,7 +507,7 @@ p6
 
 ### Amount Distribution
 
-```{r donors amount distribution}
+```{r donors amount distribution, warning=FALSE}
 
 # Distribution donors total amount
 # Bar plot
@@ -528,7 +529,7 @@ p7 <- ggplot(subset(donors_ranking_amount, donors_ranking_amount$pct > 0.1), aes
     axis.ticks.length = grid::unit(0, "pt"),
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
-    plot.margin = margin(c(7, 15, 3, 2)))
+    plot.margin = margin(c(7, 17, 3, 2)))
 p7
 
 # Distribution of amount per donor and recipient
@@ -543,8 +544,6 @@ donors_ranking_amount_per_recipient <- df %>%
   arrange(recipient, pct) %>%
   mutate(order = row_number()) %>% 
   select(donor, pct, recipient, order)
-
-par(mar = c(6, 6, 6, 6))
 
 # Bar plot
 p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_per_recipient$pct != 100), aes(x = order, y = pct, fill = recipient)) +
@@ -573,7 +572,7 @@ p8 <- ggplot(subset(donors_ranking_amount_per_recipient, donors_ranking_amount_p
     axis.ticks.y = element_blank(),
     legend.position = "none",
     panel.spacing.x = unit(1, "lines"),
-    plot.margin = margin(3, 25, 3, 3))
+    plot.margin = margin(3, 27, 3, 3))
 p8
 
 # Donors amount ranking distribution per year
@@ -619,7 +618,7 @@ p9 <- ggplot(donors_ranking_amount_timeline, aes(x = year, y = total_amount, col
     values = c("#22577a", "#f2ac18"),
     name = NULL) +
   labs(
-    title = "Donors´ amount contribution timeline per recipient") +
+    title = "Contributions amount timeline per recipient") +
   theme_dviz_open() +
   theme(
     axis.line.y.right = element_blank(),
@@ -663,7 +662,7 @@ p10 <- ggplot(donors_ranking_amount_timeline_summary, aes(x = year, y = mean, gr
   date_labels = "%Y") +
   theme_dviz_open() +
     labs(
-  title = "Mean donors´ amount contributions timeline") +
+  title = "Contributions mean amount timeline") +
   theme(plot.margin = margin(3, 7, 3, 1.5))
 p10
 
@@ -671,7 +670,7 @@ p10
 
 ### Activities Distribution
 
-```{r activities distribution}
+```{r activities distribution, warning=FALSE}
 
 # Times and frequency activities
 (activities_distrib <- df %>% 
@@ -687,16 +686,16 @@ p10
 # Rename code activities for presentation
 activities_distrib$code <- activities_distrib$code %>%
   recode_factor(
-    "14000" = "Water Supply (various)",
+    "14000" = "Water Supply (var)",
     "14005" = "Water Supply (undef)",
-    "14030" = "Basic Drinking Water",
+    "14030" = "Drinking Water",
     "14050" = "Waste/Disposal",
     "14081" = "Education"
   )
 
-
-test <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient, labels = pct)) +
-  geom_bar(position = "dodge2", stat = "identity", size = 1, width = 1) +
+# Grouped bar plot
+p11 <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient, labels = pct)) +
+  geom_bar(position = "dodge", stat = "identity", size = 1, width = .9, alpha = .8) +
   geom_text(aes(label = pct), vjust = 1.5, color = "white", size = 12/.pt, family = dviz_font_family, position = position_dodge2(.9)) +
   scale_x_discrete(expand = c(0, 0), name = NULL) +
   scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), name = NULL, expand = c(0, 0), limits = c(0, 100)) +
@@ -708,7 +707,7 @@ test <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient, labe
   ) +
   theme_dviz_hgrid() +
   theme(
-    axis.line.x.bottom = element_line(),
+    axis.line.x.bottom = element_line(size = .5, color = "black"),
     plot.margin = margin(3, 7, 3, 7),
     axis.ticks = element_blank(),
     axis.text = element_text(size = 10),
@@ -719,45 +718,7 @@ test <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient, labe
     legend.spacing.y = grid::unit(0, "cm"),
     legend.box.spacing = grid::unit(7, "pt")
     ) + 
-  labs(title = "Mean donors´ amount contributions timeline")
-  # labs(x = 'Age Group',y = 'Percentage of Clients', fill ='', title = "Clients without Cards", subtitle = paste("Total:", clients_cards_summarized$N[1])) +
-  # guides(fill = FALSE)
-test
-
-# Stacked bar plot
-p11 <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient)) +
-  geom_col(position = "dodge2", color = "white") +
-  geom_text(
-    aes(label = pct),
-    position = position_dodge2(.9),
-    color = "white",
-    size = 12/.pt,
-    family = dviz_font_family,
-    vjust = 1.5
-  ) +
-  scale_x_discrete(expand = c(0, 0), name = NULL) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), expand = c(0, 0), breaks = NULL, name = NULL) +
-  scale_fill_manual(
-    values = c("#f2ac18", "#22577a"),
-    breaks = c("Viet Nam", "Bangladesh"),
-    labels = c("Viet Nam", "Bangladesh"),
-    name = NULL
-  ) +
-  labs(title = "Mean donors´ amount contributions timeline") +
-  coord_cartesian(clip = "off") +
-  theme_dviz_grid() +
-  theme(
-    axis.line.x.bottom = element_line(),
-    axis.ticks = element_blank(),
-    axis.text = element_text(size = 10),
-    legend.position = "bottom",
-    legend.justification = "center",
-    legend.background = element_rect(fill = "white"),
-    legend.spacing.x = grid::unit(4.5, "pt"),
-    legend.spacing.y = grid::unit(0, "cm"),
-    legend.box.spacing = grid::unit(7, "pt"),
-    plot.margin = margin(3, 7, 3, 7)
-  )
+  labs(title = "Activities distribution per recipient")
 p11
 
 ```
@@ -773,6 +734,4 @@ lintr::lint("main.Rmd", linters =
                 trailing_whitespace_linter = NULL
                 )
             )
-# if you have additional scripts and want them to be linted too, add them here
-# lintr::lint("scripts/my_script.R")
 ```
