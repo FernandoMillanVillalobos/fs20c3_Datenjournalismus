@@ -278,8 +278,7 @@ Now we want to describe some important properties of the distribution of the val
 (donors_contrib <- df %>% 
   group_by(donor) %>% 
   summarize(
-    count = n(),
-    .groups = "drop"
+    count = n()
   ) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
@@ -304,8 +303,7 @@ select(df, amount) %>%
     mean = mean(amount),
     median = median(amount),
     max = max(amount),
-    min = min(amount),
-    .groups = "drop"
+    min = min(amount)
   ) %>% 
   arrange(desc(total_amount)) %>% 
   mutate(freq = total_amount / sum(total_amount),
@@ -354,8 +352,8 @@ p1
 donors_contrib_per_recipient <- df %>% 
   group_by(recipient) %>% 
   summarize(
-    count = n(),
-    .groups = "drop") %>%
+    count = n()
+    ) %>%
   mutate(freq = count / sum(count),
          pct = round(freq * 100, 1)) %>%
   arrange(desc(pct)) %>%
@@ -383,8 +381,7 @@ p2
 donors_contrib_per_donor_recipient <- df %>% 
   group_by(donor, recipient) %>% 
   summarize(
-    count = n(),
-    .groups = "drop"
+    count = n()
   ) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
@@ -436,8 +433,7 @@ p4
 donors_contrib_per_donor_recipient_ungroup_recipient <- df %>%
   group_by(donor) %>%
   summarize(
-    count = n(),
-    .groups = "drop"
+    count = n()
   ) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
@@ -466,8 +462,7 @@ p5
 donors_contrib_timeline_recipient <- df %>%
   group_by(year, recipient) %>%
   summarize(
-    count = n(),
-    .groups = "drop"
+    count = n()
   ) %>%
   arrange(year) %>%
   select(year, count, recipient)
@@ -540,8 +535,7 @@ p7
 donors_ranking_amount_per_recipient <- df %>%
   group_by(donor, recipient) %>%
   summarize(
-    total_amount = sum(amount),
-    .groups = "drop"
+    total_amount = sum(amount)
   ) %>%
   mutate(freq = total_amount / sum(total_amount),
          pct = round(freq * 100, 2)) %>%
@@ -590,8 +584,7 @@ donors_ranking_amount_timeline <- df %>%
     mean = mean(amount),
     median = median(amount),
     max = max(amount),
-    min = min(amount),
-    .groups = "drop"
+    min = min(amount)
   ) %>%
   arrange(year) %>%
   mutate(freq = total_amount / sum(total_amount),
@@ -643,8 +636,7 @@ donors_ranking_amount_timeline_summary <- df %>%
     mean = mean(amount),
     median = median(amount),
     max = max(amount),
-    min = min(amount),
-    .groups = "drop"
+    min = min(amount)
   ) %>%
   arrange(year) %>%
   mutate(freq = total_amount / sum(total_amount),
@@ -685,8 +677,7 @@ p10
 (activities_distrib <- df %>% 
   group_by(code, recipient) %>% 
   summarize(
-    count = n(),
-    .groups = "drop"
+    count = n()
   ) %>%
   arrange(desc(code)) %>%
   mutate(freq = count / sum(count),
@@ -715,7 +706,7 @@ test <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient, labe
     labels = c("Viet Nam", "Bangladesh"),
     name = NULL
   ) +
-  theme_dviz_grid() +
+  theme_dviz_hgrid() +
   theme(
     axis.line.x.bottom = element_line(),
     plot.margin = margin(3, 7, 3, 7),
