@@ -26,7 +26,7 @@ knit: (function(inputFile, encoding) {
 user_name <- "FernandoMillanVillalobos" # your Git username (only needed if
 # you want to deploy to GH pages)
 project_name <- "fs20c3_datenjournalismus" # adapt!
-package_date <- "2020-04-01" # date of the CRAN snapshot that
+package_date <- "2020-06-01" # date of the CRAN snapshot that
 # the checkpoint package uses
 r_version <- "4.0.0" # R-Version to use
 options(Ncpus = 4) # use 4 cores for parallelized installation of packages
@@ -278,7 +278,8 @@ Now we want to describe some important properties of the distribution of the val
 (donors_contrib <- df %>% 
   group_by(donor) %>% 
   summarize(
-    count = n()
+    count = n(),
+    .groups = "drop"
   ) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
@@ -303,7 +304,8 @@ select(df, amount) %>%
     mean = mean(amount),
     median = median(amount),
     max = max(amount),
-    min = min(amount)
+    min = min(amount),
+    .groups = "drop"
   ) %>% 
   arrange(desc(total_amount)) %>% 
   mutate(freq = total_amount / sum(total_amount),
@@ -352,7 +354,8 @@ p1
 donors_contrib_per_recipient <- df %>% 
   group_by(recipient) %>% 
   summarize(
-    count = n()) %>%
+    count = n(),
+    .groups = "drop") %>%
   mutate(freq = count / sum(count),
          pct = round(freq * 100, 1)) %>%
   arrange(desc(pct)) %>%
@@ -380,7 +383,8 @@ p2
 donors_contrib_per_donor_recipient <- df %>% 
   group_by(donor, recipient) %>% 
   summarize(
-    count = n()
+    count = n(),
+    .groups = "drop"
   ) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
@@ -432,7 +436,8 @@ p4
 donors_contrib_per_donor_recipient_ungroup_recipient <- df %>%
   group_by(donor) %>%
   summarize(
-    count = n()
+    count = n(),
+    .groups = "drop"
   ) %>%
   arrange(desc(count)) %>%
   mutate(freq = count / sum(count),
@@ -461,7 +466,8 @@ p5
 donors_contrib_timeline_recipient <- df %>%
   group_by(year, recipient) %>%
   summarize(
-    count = n()
+    count = n(),
+    .groups = "drop"
   ) %>%
   arrange(year) %>%
   select(year, count, recipient)
@@ -534,7 +540,8 @@ p7
 donors_ranking_amount_per_recipient <- df %>%
   group_by(donor, recipient) %>%
   summarize(
-    total_amount = sum(amount)
+    total_amount = sum(amount),
+    .groups = "drop"
   ) %>%
   mutate(freq = total_amount / sum(total_amount),
          pct = round(freq * 100, 2)) %>%
@@ -583,7 +590,8 @@ donors_ranking_amount_timeline <- df %>%
     mean = mean(amount),
     median = median(amount),
     max = max(amount),
-    min = min(amount)
+    min = min(amount),
+    .groups = "drop"
   ) %>%
   arrange(year) %>%
   mutate(freq = total_amount / sum(total_amount),
@@ -635,7 +643,8 @@ donors_ranking_amount_timeline_summary <- df %>%
     mean = mean(amount),
     median = median(amount),
     max = max(amount),
-    min = min(amount)
+    min = min(amount),
+    .groups = "drop"
   ) %>%
   arrange(year) %>%
   mutate(freq = total_amount / sum(total_amount),
@@ -676,45 +685,40 @@ p10
 (activities_distrib <- df %>% 
   group_by(code, recipient) %>% 
   summarize(
-    count = n()
+    count = n(),
+    .groups = "drop"
   ) %>%
   arrange(desc(code)) %>%
   mutate(freq = count / sum(count),
          pct = round(freq * 100, 1)) %>%
-  select(code, recipient, count, pct))
+  select(code, recipient, pct))
 
 # Rename code activities for presentation
 activities_distrib$code <- activities_distrib$code %>%
   recode_factor(
-    "14000" = "Water Supply (combi)",
+    "14000" = "Water Supply (various)",
     "14005" = "Water Supply (undef)",
     "14030" = "Basic Drinking Water",
     "14050" = "Waste/Disposal",
     "14081" = "Education"
   )
 
-# Stacked bar plot
-p11 <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient)) +
-  geom_col(position = "stack", color = "white", size = 1, width = 1) +
-  geom_text(
-    aes(y = pct, label = pct), 
-    color = "white",
-    size = 12/.pt,
-    family = dviz_font_family,
-    vjust = -3
-  ) +
+
+test <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient, labels = pct)) +
+  geom_bar(position = "dodge2", stat = "identity", size = 1, width = 1) +
+  geom_text(aes(label = pct), vjust = 1.5, color = "white", size = 12/.pt, family = dviz_font_family, position = position_dodge2(.9)) +
   scale_x_discrete(expand = c(0, 0), name = NULL) +
-  scale_y_continuous(expand = c(0, 0), breaks = NULL, name = NULL) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), name = NULL, expand = c(0, 0), limits = c(0, 100)) +
   scale_fill_manual(
     values = c("#f2ac18", "#22577a"),
     breaks = c("Viet Nam", "Bangladesh"),
     labels = c("Viet Nam", "Bangladesh"),
     name = NULL
   ) +
-  coord_cartesian(clip = "off") +
   theme_dviz_grid() +
   theme(
-    panel.grid.major = element_blank(),
+    axis.line.x.bottom = element_line(),
+    plot.margin = margin(3, 7, 3, 7),
     axis.ticks = element_blank(),
     axis.text = element_text(size = 10),
     legend.position = "bottom",
@@ -723,6 +727,45 @@ p11 <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient)) +
     legend.spacing.x = grid::unit(4.5, "pt"),
     legend.spacing.y = grid::unit(0, "cm"),
     legend.box.spacing = grid::unit(7, "pt")
+    ) + 
+  labs(title = "Mean donors´ amount contributions timeline")
+  # labs(x = 'Age Group',y = 'Percentage of Clients', fill ='', title = "Clients without Cards", subtitle = paste("Total:", clients_cards_summarized$N[1])) +
+  # guides(fill = FALSE)
+test
+
+# Stacked bar plot
+p11 <- ggplot(activities_distrib, aes(x = code, y = pct, fill = recipient)) +
+  geom_col(position = "dodge2", color = "white") +
+  geom_text(
+    aes(label = pct),
+    position = position_dodge2(.9),
+    color = "white",
+    size = 12/.pt,
+    family = dviz_font_family,
+    vjust = 1.5
+  ) +
+  scale_x_discrete(expand = c(0, 0), name = NULL) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), expand = c(0, 0), breaks = NULL, name = NULL) +
+  scale_fill_manual(
+    values = c("#f2ac18", "#22577a"),
+    breaks = c("Viet Nam", "Bangladesh"),
+    labels = c("Viet Nam", "Bangladesh"),
+    name = NULL
+  ) +
+  labs(title = "Mean donors´ amount contributions timeline") +
+  coord_cartesian(clip = "off") +
+  theme_dviz_grid() +
+  theme(
+    axis.line.x.bottom = element_line(),
+    axis.ticks = element_blank(),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom",
+    legend.justification = "center",
+    legend.background = element_rect(fill = "white"),
+    legend.spacing.x = grid::unit(4.5, "pt"),
+    legend.spacing.y = grid::unit(0, "cm"),
+    legend.box.spacing = grid::unit(7, "pt"),
+    plot.margin = margin(3, 7, 3, 7)
   )
 p11
 
